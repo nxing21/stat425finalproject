@@ -1,0 +1,40 @@
+---
+title: "finalproject"
+output: html_document
+date: "2024-04-07"
+---
+
+
+```{r}
+# Reading the data from the file
+insurance = read.csv("insurance.csv")
+attach(insurance)
+model = lm(charges~., data = insurance)
+summary(model)
+```
+
+Section 1: Introduction
+Provide a brief introduction of the goal of this final project. What is it all about? Where did you get the data from? What is the data framework? What are the main questions you want to answer with this data analysis?
+
+Section 2: Exploratory Data Analysis
+Include some graphical displays and numerical summaries of the data. Also comment on any patterns/characteristics of the data which you find interesting or anything relevant to your later analysis.
+
+Provide a brief explanation/summary of variables you plan to include in your analysis. Here are some question you might ask:
+
+Which variables are categorical (when applicable) and which are numerical?
+Should we remove any unusual observations?
+Should we add or remove some variables in our analysis?
+For categorical variables (when applicable), should we include any interactions?
+For numerical variables, any evidence supporting nonlinear trends?
+
+Section 3: Methodology
+You are required to build at least two prediction models using the methods covered in this class. For each model or method you are using, include a brief description of the methodology and a description of the R implementation (R coding steps).
+
+Your should consider the following sub-sections:
+Section 3.1: Start with a simple model, a model that doesn't require much training, for example, a linear regression model built after appropriate variable selection and model diagnostics.
+Section 3.2: Use the Linear Regression model built in 1 to make predictions on a testing set.
+Section 3.3: Fit a different kind of model like a non-parametric regression, regularized regression models or others, and make a prediction on the same testing set.
+Section 3.4 (Optional): You can also try with other methods learnt in other classes if applicable (like for example Random Forests).
+
+Section 4: Discussion and conclusions
+In this part you should make a summary of your results  by comparing the different modeling approaches and discussing the impact of your analysis. You should also write the main conclusions of your analysis in three to four bullet points.
