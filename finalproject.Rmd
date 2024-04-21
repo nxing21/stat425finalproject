@@ -1,20 +1,23 @@
 ---
 title: "finalproject"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 date: "2024-04-07"
 ---
 
 
-```{r}
+```{r echo=FALSE}
 # Reading the data from the file
 insurance = read.csv("insurance.csv")
 attach(insurance)
-model = lm(charges~., data = insurance)
-summary(model)
+insmod = lm(charges~., data = insurance)
 ```
 
 Section 1: Introduction
 Provide a brief introduction of the goal of this final project. What is it all about? Where did you get the data from? What is the data framework? What are the main questions you want to answer with this data analysis?
+
+The data comes from the Kaggle data sets. The link can be found here: https://www.kaggle.com/datasets/mirichoi0218/insurance/data
 
 Section 2: Exploratory Data Analysis
 Include some graphical displays and numerical summaries of the data. Also comment on any patterns/characteristics of the data which you find interesting or anything relevant to your later analysis.
@@ -26,6 +29,49 @@ Should we remove any unusual observations?
 Should we add or remove some variables in our analysis?
 For categorical variables (when applicable), should we include any interactions?
 For numerical variables, any evidence supporting nonlinear trends?
+
+Here is a brief overview of all of the variables of this dataset:
+
+Numerical Variables:
+
+- age: age of primary beneficiary
+- bmi: body mass index
+- children: number of children/dependents covered by health insurance
+- charges (response variable): medical costs billed by health insurance
+
+Categorical Variables:
+
+- sex: male or female
+- smoker: yes or no
+- region: residential area in the US, can be northeast, southeast, southwest, or northwest
+
+```{r echo=FALSE}
+# Checking for unusual observations (outliers)
+n=1338; p=8;
+stud <- rstudent(insmod)
+```
+
+Firstly, we performed an outlier test to check if there are any unusual observations. To do so, we obtained the studentized residuals for our data, and compared the largest values with the Bonferroni critical value.
+
+This is the Bonferroni critical value we calculated:
+
+```{r echo=FALSE}
+qt(.05/(2*n), n-p-1) # Bonferroni critical value
+```
+
+Next, here are the five largest studentized residuals, which we will be comparing to the Bonferroni critical value:
+
+```{r echo=FALSE}
+sort(abs(stud), decreasing=TRUE)[1:5] # largest 5 studentized residuals
+# 1301 and 578 are unusual observations, we should remove them
+```
+
+Since the absolute value of their respective studentized residual is greater than the Bonferroni critical value, we can conclude that Observation #1301 and Observation #578 are outliers. We will be removing these points.
+
+```{r echo=FALSE}
+insurance2 = insurance[-c(1301,578),]
+insmod2 = lm(charges~., data = insurance2) # new model with the two outliers removed
+```
 
 Section 3: Methodology
 You are required to build at least two prediction models using the methods covered in this class. For each model or method you are using, include a brief description of the methodology and a description of the R implementation (R coding steps).
