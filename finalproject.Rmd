@@ -8,10 +8,12 @@ date: "2024-04-07"
 
 
 ```{r echo=FALSE}
+library(ggplot2)
 # Reading the data from the file
 insurance = read.csv("insurance.csv")
 attach(insurance)
 insmod = lm(charges~., data = insurance)
+summary(insmod)
 ```
 
 Section 1: Introduction
@@ -71,7 +73,72 @@ Since the absolute value of their respective studentized residual is greater tha
 ```{r echo=FALSE}
 insurance2 = insurance[-c(1301,578),]
 insmod2 = lm(charges~., data = insurance2) # new model with the two outliers removed
+summary(insmod2)
 ```
+
+After removing these two points, we will be analyzing the predictors to see if there are any variables we should add or remove.
+
+```{r echo=FALSE}
+boxplot(charges ~ age, data = insurance2)
+```
+
+From the boxplot of charges vs age, we notice a trend that the charges increase as age increases. We will not be removing 'age' as a predictor since it is clear that it has a significant impact on the response variable 'charges'. This makes sense because as people grow older, their health declines, and the insurance costs increase.
+
+```{r echo=FALSE}
+boxplot(charges ~ sex, data=insurance2)
+```
+
+The charges vs sex boxplot tells us that males tend to have higher charges than females. We will conduct a t-test to test this difference.
+
+We obtained this p-value from the t-test:
+
+```{r echo=FALSE}
+t.test(charges ~ sex, data=insurance2, var.equal=TRUE)[3] # p-value of 'sex'
+```
+
+Given that the p-value is less than 0.05, we conclude that 'sex' is a significant predictor, with males incurring higher insurance costs than females. A possible explanation for this is that males are usually more at risk of health conditions that result in increased charges compared to females.
+
+```{r echo=FALSE}
+plot(bmi, charges)
+```
+
+From the plot of charges vs bmi, we can see a general trend that as bmi increases, the charges also increase. As a result, we will not be removing 'bmi' as a predictor since it appears to have an impact on the response variable. The graph also makes sense logically since people with a higher bmi tend to be overweight and subsequently, have worse health than people with a lower bmi, causing their insurance charges to be greater as well.
+
+```{r echo=FALSE}
+boxplot(charges ~ children, data=insurance2)
+```
+
+The boxplot of charges vs children conveys to us that charges tend to increase as the number of children grows from 0 or 1 to 2 or 3. While there are some data points for people with 4 or 5 children, it appears that these groups have a very low amount of people, and it may be challenging to draw meaningful conclusions from it. We perform an ANOVA test to test the significance of 'children' as a predictor.
+
+This is the p-value we obtain:
+
+```{r echo=FALSE}
+insmodchildren = lm(charges ~ children, data=insurance2)
+anova(insmodchildren)[1,5] # p-value of 'children'
+```
+
+This p-value is less than 0.05, thus signifying that the predictor 'children' is significant. We will be keeping as a predictor in our model. A larger number of children/dependents covered leads to higher charges, as there are more individuals who need to be covered.
+
+```{r echo=FALSE}
+boxplot(charges ~ smoker, data=insurance2)
+```
+
+From the boxplot of charges vs smoker, it is evident that smokers generally face significally higher charges than non-smokers. Consequently, we will not be removing 'smoker' as a predictor. People who smoke typically incur higher insurance costs due to the health risks posed by smoking.
+
+```{r echo=FALSE}
+boxplot(charges ~ region, data=insurance2)
+```
+
+The boxplot of charges vs region shows us that the southeast region seemingly has higher charges than the other three regions. We will conduct an ANOVA test to make sure that the predictor 'region' is significant.
+
+This is the p-value we obtained from the ANOVA test:
+
+```{r echo=FALSE}
+insmodreg = lm(charges ~ region, data=insurance2)
+anova(insmodreg)[1,5] # p-value of 'region'
+```
+
+The p-value is less than 0.05, indicating that the predictor 'region' is significant, and thus we will retain it as a predictor. This confirms that there are regional differences in the insurance costs.
 
 Section 3: Methodology
 You are required to build at least two prediction models using the methods covered in this class. For each model or method you are using, include a brief description of the methodology and a description of the R implementation (R coding steps).
