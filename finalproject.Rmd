@@ -72,6 +72,7 @@ Since the absolute value of their respective studentized residual is greater tha
 
 ```{r echo=FALSE}
 insurance2 = insurance[-c(1301,578),]
+attach(insurance2)
 insmod2 = lm(charges~., data = insurance2) # new model with the two outliers removed
 summary(insmod2)
 ```
@@ -123,7 +124,7 @@ This p-value is less than 0.05, thus signifying that the predictor 'children' is
 boxplot(charges ~ smoker, data=insurance2)
 ```
 
-From the boxplot of charges vs smoker, it is evident that smokers generally face significally higher charges than non-smokers. Consequently, we will not be removing 'smoker' as a predictor. People who smoke typically incur higher insurance costs due to the health risks posed by smoking.
+From the boxplot of charges vs smoker, it is evident that smokers generally face significantly higher charges than non-smokers. Consequently, we will not be removing 'smoker' as a predictor. People who smoke typically incur higher insurance costs due to the health risks posed by smoking.
 
 ```{r echo=FALSE}
 boxplot(charges ~ region, data=insurance2)
@@ -139,6 +140,72 @@ anova(insmodreg)[1,5] # p-value of 'region'
 ```
 
 The p-value is less than 0.05, indicating that the predictor 'region' is significant, and thus we will retain it as a predictor. This confirms that there are regional differences in the insurance costs.
+
+\newpage
+
+Now, we will explore whether or not we should include any interactions between categorical variables. We will be analyzing the following three interactions.
+
+- 'sex' and 'smoker'
+- 'sex' and 'region'
+- 'region' and 'smoker'
+
+We will first test the interaction between 'sex' and 'smoker'.
+
+```{r echo=FALSE}
+ggplot(insurance2, aes(x = paste(sex, smoker), y = charges)) + geom_boxplot()
+```
+
+From the plot, although smoking increases the charges for both males and females, the impact is greater for males. We will fit the model with the interaction as a predictor and check the significance.
+
+Here is the p-value we obtained from the test:
+
+```{r echo=FALSE}
+mod1 = lm(charges ~ sex*smoker, data=insurance2)
+anova(mod1)[3,5]
+```
+
+The p-value is less than 0.05, so this interaction is significant and we will include it in our final model.
+
+We will now test the interaction between 'sex' and 'region'.
+
+```{r echo=FALSE}
+ggplot(insurance2, aes(x = paste(sex, region), y = charges)) + geom_boxplot()
+```
+
+Overall, it appears as though the interaction between sex and region does not have much of an impact on charges. Once again, we will fit the model with the interaction and conduct a test to truly find out whether the interaction is significant.
+
+This is the p-value we obtained from our test:
+
+```{r echo=FALSE}
+mod2 = lm(charges ~ sex*region, data=insurance2)
+anova(mod2)[3,5]
+```
+
+Since the p-value is greater than 0.05, we confirm that this interaction is not significant and we will not include it in our final model.
+
+Finally, we will test the interaction between 'region' and 'smoker'.
+
+```{r echo=FALSE}
+ggplot(insurance2, aes(x = paste(region, smoker), y = charges)) + geom_boxplot()
+```
+
+Based on the plot, it seems like people who smoke and are from southeast and southwest have significantly higher charges than people who smoke from the northeast and northwest. Again, we will fit the model with the interaction as a predictor to check the significance.
+
+This is the p-value from the test:
+
+```{r echo=FALSE}
+mod3 = lm(charges ~ region*smoker, data=insurance2)
+anova(mod3)[3,5]
+```
+
+The p-value is less than 0.05, indicating that this interaction is significant. We will include it in our final model.
+
+```{r echo=FALSE}
+insmodfinal = lm(charges~.+sex:smoker+region:smoker, data=insurance2)
+summary(insmodfinal)
+```
+
+
 
 Section 3: Methodology
 You are required to build at least two prediction models using the methods covered in this class. For each model or method you are using, include a brief description of the methodology and a description of the R implementation (R coding steps).
