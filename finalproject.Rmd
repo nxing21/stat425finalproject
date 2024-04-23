@@ -205,8 +205,6 @@ insmodfinal = lm(charges~.+sex:smoker+region:smoker, data=insurance2)
 summary(insmodfinal)
 ```
 
-
-
 Section 3: Methodology
 You are required to build at least two prediction models using the methods covered in this class. For each model or method you are using, include a brief description of the methodology and a description of the R implementation (R coding steps).
 
