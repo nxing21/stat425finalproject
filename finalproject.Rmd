@@ -66,6 +66,7 @@ Next, here are the five largest studentized residuals, which we will be comparin
 ```{r echo=FALSE}
 sort(abs(stud), decreasing=TRUE)[1:5] # largest 5 studentized residuals
 # 1301 and 578 are unusual observations, we should remove them
+# leverage values for highly influential points (?)
 ```
 
 Since the absolute value of their respective studentized residual is greater than the Bonferroni critical value, we can conclude that Observation #1301 and Observation #578 are outliers. We will be removing these points.
@@ -107,6 +108,7 @@ From the plot of charges vs bmi, we can see a general trend that as bmi increase
 
 ```{r echo=FALSE}
 boxplot(charges ~ children, data=insurance2)
+cor(charges, children)
 ```
 
 The boxplot of charges vs children conveys to us that charges tend to increase as the number of children grows from 0 or 1 to 2 or 3. While there are some data points for people with 4 or 5 children, it appears that these groups have a very low amount of people, and it may be challenging to draw meaningful conclusions from it. We perform an ANOVA test to test the significance of 'children' as a predictor.
@@ -204,6 +206,35 @@ The p-value is less than 0.05, indicating that this interaction is significant. 
 insmodfinal = lm(charges~.+sex:smoker+region:smoker, data=insurance2)
 summary(insmodfinal)
 ```
+
+Now, we will examine the numerical variables and see if there is evidence of any nonlinear trends.
+
+```{r echo=FALSE}
+mod4 = lm(charges~age, data=insurance2)
+mod4_quad = lm(charges~age+I(age^2), data=insurance2)
+ggplot(insurance2, aes(age, charges)) + geom_point() + 
+  geom_line(aes(y=fitted(mod4_quad), color = 'quadratic fit'))
+```
+
+Based on the plot of the quadratic fit for charges vs age, we see there is evidence of non-linearity for the predictor 'age' since the quadratic fit has some upward curvature.
+
+```{r echo=FALSE}
+mod5 = lm(charges~bmi, data=insurance2)
+mod5_quad = lm(charges~bmi+I(bmi^2), data=insurance2)
+ggplot(insurance2, aes(bmi, charges)) + geom_point() + 
+  geom_line(aes(y=fitted(mod5_quad), color = 'quadratic fit'))
+```
+
+Similarly, based on the plot of the quadratic fit for charges vs bmi, we see there is some evidence of non-linearity for the predictor 'bmi', although maybe not as clear as for 'age'. This time, the quadratic fit curves downards.
+
+```{r echo=FALSE}
+mod6 = lm(charges~children, data=insurance2)
+mod6_quad = lm(charges~children+I(children^2), data=insurance2)
+ggplot(insurance2, aes(children, charges)) + geom_point() + 
+  geom_line(aes(y=fitted(mod6_quad), color = 'quadratic fit'))
+```
+
+Finally, the plot of charges vs children also suggests some non-linearity. However, the non-linearity is not as evident as for 'age and 'bmi' since although the quadratic fit does appear to curve downwards as the number of children increases, there is not many data points for 4 and 5 children, so we may not be able to draw a strong conclusion.
 
 Section 3: Methodology
 You are required to build at least two prediction models using the methods covered in this class. For each model or method you are using, include a brief description of the methodology and a description of the R implementation (R coding steps).
