@@ -9,6 +9,7 @@ date: "2024-04-07"
 
 ```{r include=FALSE}
 library(ggplot2)
+library(gridExtra)
 # Reading the data from the file
 insurance = read.csv("insurance.csv")
 attach(insurance)
@@ -32,6 +33,7 @@ For categorical variables (when applicable), should we include any interactions?
 For numerical variables, any evidence supporting nonlinear trends?
 
 \newpage
+## Section 2: Exploratory Data Analysis
 Here is a brief overview of all of the variables of this dataset:
 
 Numerical Variables:
@@ -94,14 +96,16 @@ summary(insmod2)
 After removing these two points, we will be analyzing the predictors to see if there are any variables we should add or remove.
 
 ```{r echo=FALSE}
-boxplot(charges ~ age, data = insurance2)
+p1=ggplot(insurance2, aes(age, charges)) + geom_point(size=0.5)
+p2=ggplot(insurance2, aes(as.factor(sex), charges)) + geom_boxplot(outlier.size=0.5)
+p3=ggplot(insurance2, aes(bmi, charges)) + geom_point(size=0.5)
+p4=ggplot(insurance2, aes(as.factor(children), charges)) + geom_boxplot(outlier.size=0.5)
+p5=ggplot(insurance2, aes(as.factor(smoker), charges)) + geom_boxplot(outlier.size=0.5)
+p6=ggplot(insurance2, aes(as.factor(region), charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+grid.arrange(p1,p2,p3,p4,p5,p6,nrow=2, ncol=3)
 ```
 
-From the boxplot of charges vs age, we notice a trend that the charges increase as age increases. We will not be removing 'age' as a predictor since it is clear that it has a significant impact on the response variable 'charges'. This makes sense because as people grow older, their health declines, and the insurance costs increase.
-
-```{r echo=FALSE}
-boxplot(charges ~ sex, data=insurance2)
-```
+From the plot of charges vs age, we notice a trend that the charges increase as age increases. We will not be removing 'age' as a predictor since it is clear that it has a significant impact on the response variable 'charges'. This makes sense because as people grow older, their health declines, and the insurance costs increase.
 
 The charges vs sex boxplot tells us that males tend to have higher charges than females. We will conduct a t-test to test this difference.
 
@@ -113,15 +117,7 @@ t.test(charges ~ sex, data=insurance2, var.equal=TRUE)[3] # p-value of 'sex'
 
 Given that the p-value is less than 0.05, we conclude that 'sex' is a significant predictor, with males incurring higher insurance costs than females. A possible explanation for this is that males are usually more at risk of health conditions that result in increased charges compared to females.
 
-```{r echo=FALSE}
-plot(bmi, charges)
-```
-
 From the plot of charges vs bmi, we can see a general trend that as bmi increases, the charges also increase. As a result, we will not be removing 'bmi' as a predictor since it appears to have an impact on the response variable. The graph also makes sense logically since people with a higher bmi tend to be overweight and subsequently, have worse health than people with a lower bmi, causing their insurance charges to be greater as well.
-
-```{r echo=FALSE}
-boxplot(charges ~ children, data=insurance2)
-```
 
 The boxplot of charges vs children conveys to us that charges tend to increase as the number of children grows from 0 or 1 to 2 or 3. While there are some data points for people with 4 or 5 children, it appears that these groups have a very low amount of people, and it may be challenging to draw meaningful conclusions from it. We perform an ANOVA test to test the significance of 'children' as a predictor.
 
@@ -134,15 +130,7 @@ anova(insmodchildren)[1,5] # p-value of 'children'
 
 This p-value is less than 0.05, thus signifying that the predictor 'children' is significant. We will be keeping as a predictor in our model. A larger number of children/dependents covered leads to higher charges, as there are more individuals who need to be covered.
 
-```{r echo=FALSE}
-boxplot(charges ~ smoker, data=insurance2)
-```
-
 From the boxplot of charges vs smoker, it is evident that smokers generally face significantly higher charges than non-smokers. Consequently, we will not be removing 'smoker' as a predictor. People who smoke typically incur higher insurance costs due to the health risks posed by smoking.
-
-```{r echo=FALSE}
-boxplot(charges ~ region, data=insurance2)
-```
 
 The boxplot of charges vs region shows us that the southeast region seemingly has higher charges than the other three regions. We will conduct an ANOVA test to make sure that the predictor 'region' is significant.
 
@@ -157,19 +145,20 @@ The p-value is less than 0.05, indicating that the predictor 'region' is signifi
 
 \newpage
 
-Now, we will explore whether or not we should include any interactions between categorical variables. We will be analyzing the following four interactions.
+Now, we will explore whether or not we should include any interactions between categorical variables. We will be analyzing all possible first-order and second-order interactions between our categorical predictors, including:
 
 - 'sex' and 'smoker'
 - 'sex' and 'region'
 - 'region' and 'smoker'
 - 'sex', 'smoker', and 'region'
 
-Here are the plots that show the interactions between these predictors.
+Here are some plots that show the interactions between these predictors.
 
 ```{r echo=FALSE}
-ggplot(insurance2, aes(x = paste(sex, smoker), y = charges)) + geom_boxplot()
-ggplot(insurance2, aes(x = paste(sex, region), y = charges)) + geom_boxplot()
-ggplot(insurance2, aes(x = paste(region, smoker), y = charges)) + geom_boxplot()
+p_int1=ggplot(insurance2, aes(x = paste(sex, smoker), y = charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
+p_int2=ggplot(insurance2, aes(x = paste(sex, region), y = charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
+p_int3=ggplot(insurance2, aes(x = paste(region, smoker), y = charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
+grid.arrange(p_int1,p_int2,p_int3, ncol=3)
 ```
 
 From the plots, it appears as though smoking increases the charges more for males than females. Additionally, it seems like smoking has a greater impact on charges in the southeast and southwest, when compared to northeast and northwest. However, it does not appear that sex and region is a significant interaction.
@@ -192,7 +181,7 @@ anova(mod3)
 # we find that both sex:smoker and smoker:region are significant interactions, so we keep them in the final model
 ```
 
-From our backward elimination procedure of the four interactions, we find that only the interactions sex:smoker and smoker:region are significant, and we will include them in the final model.
+We applied sequential F-tests with the anova function to assess the significance of the interaction terms in our model. Initially, we included all potential interactions among the three variables 'sex', 'smoker', and 'region'. We first found that the second-order interaction sex:smoker:region was not significant, and removed it from the model. Subsequently, we tested the first-order interactions and found that the interaction sex:region was not significant. Finally, after removing sex:region as a predictor, we concluded that only the interactions sex:smoker and smoker:region are statistically significant, and we will retain them in the final model.
 
 ```{r include=FALSE}
 insmodfinal = lm(charges~.+sex:smoker+region:smoker, data=insurance2)
@@ -205,31 +194,26 @@ Now, we will examine the numerical variables and see if there is evidence of any
 ```{r echo=FALSE}
 mod4 = lm(charges~age, data=insurance2)
 mod4_quad = lm(charges~age+I(age^2), data=insurance2)
-ggplot(insurance2, aes(age, charges)) + geom_point() + 
+mod4_plot = ggplot(insurance2, aes(age, charges)) + geom_point(size=0.5) + 
   geom_line(aes(y=fitted(mod4_quad), color = 'quadratic fit'))
+mod5 = lm(charges~bmi, data=insurance2)
+mod5_quad = lm(charges~bmi+I(bmi^2), data=insurance2)
+mod5_plot = ggplot(insurance2, aes(bmi, charges)) + geom_point(size=0.5) + 
+  geom_line(aes(y=fitted(mod5_quad), color = 'quadratic fit'))
+mod6 = lm(charges~children, data=insurance2)
+mod6_quad = lm(charges~children+I(children^2), data=insurance2)
+mod6_plot = ggplot(insurance2, aes(children, charges)) + geom_point(size=0.5) + 
+  geom_line(aes(y=fitted(mod6_quad), color = 'quadratic fit'))
+grid.arrange(mod4_plot, mod5_plot, mod6_plot, nrow=2, ncol=2)
 ```
 
 Based on the plot of the quadratic fit for charges vs age, we see there is evidence of non-linearity for the predictor 'age' since the quadratic fit has some upward curvature.
 
-```{r echo=FALSE}
-mod5 = lm(charges~bmi, data=insurance2)
-mod5_quad = lm(charges~bmi+I(bmi^2), data=insurance2)
-ggplot(insurance2, aes(bmi, charges)) + geom_point() + 
-  geom_line(aes(y=fitted(mod5_quad), color = 'quadratic fit'))
-```
-
 Similarly, based on the plot of the quadratic fit for charges vs bmi, we see there is some evidence of non-linearity for the predictor 'bmi', although maybe not as clear as for 'age'. This time, the quadratic fit curves downwards.
 
-```{r echo=FALSE}
-mod6 = lm(charges~children, data=insurance2)
-mod6_quad = lm(charges~children+I(children^2), data=insurance2)
-ggplot(insurance2, aes(children, charges)) + geom_point() + 
-  geom_line(aes(y=fitted(mod6_quad), color = 'quadratic fit'))
-```
-
 Finally, the plot of charges vs children also suggests some non-linearity. However, the non-linearity is not as evident as for 'age and 'bmi' since although the quadratic fit does appear to curve downwards as the number of children increases, there is not many data points for 4 and 5 children, so we may not be able to draw a strong conclusion.
-
-Section 3: Methodology
+\newpage
+## Section 3: Methodology
 You are required to build at least two prediction models using the methods covered in this class. For each model or method you are using, include a brief description of the methodology and a description of the R implementation (R coding steps).
 
 Your should consider the following sub-sections:
