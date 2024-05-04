@@ -1,11 +1,22 @@
 ---
-title: "finalproject"
-output:
-  pdf_document: default
-  html_document: default
-date: "2024-04-07"
+title: |
+  |
+  Hospital Insurance Charges Model\\
+  \vspace{0.5cm}\
+  Final for STAT 425
+author: 
+  - "Nick Xing"
+  - "Zihan Zhu"
+  - "Noah Clark"
+date: "May 6, 2024"
+output: 
+  pdf_document:
+    toc: yes
+    toc_depth: 3
+    keep_tex: yes  # This keeps the intermediate LaTeX file for debugging
+fontsize: 12pt
+mainfont: Arial
 ---
-
 
 ```{r include=FALSE}
 library(ggplot2)
@@ -16,21 +27,31 @@ attach(insurance)
 insmod = lm(charges~., data = insurance)
 ```
 
-Section 1: Introduction
-Provide a brief introduction of the goal of this final project. What is it all about? Where did you get the data from? What is the data framework? What are the main questions you want to answer with this data analysis?
 
-The data comes from the Kaggle data sets. The link can be found here: https://www.kaggle.com/datasets/mirichoi0218/insurance/data
+\newpage
+##  Section 1: Introduction
+This project focuses on the analysis of medical insurance data, particularly focusing on the medical charges acquired from hospital visits. The response variable is the variable charges from the insurance data. This data is found on Kaggle, as was last updated 6 years ago, in 2018. 
+  In this data set, there 6 variables excluding the response variable, charges, which shows the exact charges the patient acquired from their hospital visit. Each variable is defined within the Kaggle (2018) website and explained in this order:
 
-Section 2: Exploratory Data Analysis
-Include some graphical displays and numerical summaries of the data. Also comment on any patterns/characteristics of the data which you find interesting or anything relevant to your later analysis.
+* age: age of primary beneficiary
 
-Provide a brief explanation/summary of variables you plan to include in your analysis. Here are some question you might ask:
+* sex: insurance contractor gender, female, male
 
-Which variables are categorical (when applicable) and which are numerical?
-Should we remove any unusual observations?
-Should we add or remove some variables in our analysis?
-For categorical variables (when applicable), should we include any interactions?
-For numerical variables, any evidence supporting nonlinear trends?
+* bmi: Body mass index, providing an understanding of body, weights that are relatively high or low relative to height,
+objective index of body weight (kg / m ^ 2) using the ratio of height to weight, ideally 18.5 to 24.9
+
+* children: Number of children covered by health insurance / Number of dependents
+
+* smoker: Smoking
+
+* region: the beneficiary's residential area in the US, northeast, southeast, southwest, northwest.
+
+* charges: Individual medical costs billed by health insurance
+
+
+  This report compares multiple models derived from analysis of the data set including an Explanatory Model, a Linear Regression Model, a Regression Tree, and a Random Forest.
+  All analyses are performed in the R environment. This is possible to recreate with the code provided in this file.         Setting seeds might yield slightly different results; however, we did not use a seed to analyze this data. No function (i.e. _set.seed_) should change the results concluded from this data, although it is possible to slightly alter the data using said functions. Again, the results would be concluded the same way.
+  This report has 4 sections. Section 1 is this introduction. Section 2 uses modelling assumptions and models to analyze the data and provide insights on the data. Section 3 presents predictive models and shows training from said models. Section 4 compares models and provides a discussion of these results.
 
 \newpage
 ## Section 2: Exploratory Data Analysis
@@ -96,12 +117,12 @@ summary(insmod2)
 After removing these two points, we will be analyzing the predictors to see if there are any variables we should add or remove.
 
 ```{r echo=FALSE}
-p1=ggplot(insurance2, aes(age, charges)) + geom_point(size=0.5)
-p2=ggplot(insurance2, aes(as.factor(sex), charges)) + geom_boxplot(outlier.size=0.5)
-p3=ggplot(insurance2, aes(bmi, charges)) + geom_point(size=0.5)
-p4=ggplot(insurance2, aes(as.factor(children), charges)) + geom_boxplot(outlier.size=0.5)
-p5=ggplot(insurance2, aes(as.factor(smoker), charges)) + geom_boxplot(outlier.size=0.5)
-p6=ggplot(insurance2, aes(as.factor(region), charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+p1=ggplot(insurance2, aes(age, charges)) + geom_point(size=0.5, color = 'red') 
+p2=ggplot(insurance2, aes(as.factor(sex), charges)) + geom_boxplot(outlier.size=0.5, color = 'orange')
+p3=ggplot(insurance2, aes(bmi, charges)) + geom_point(size=0.5, color = 'yellow')
+p4=ggplot(insurance2, aes(as.factor(children), charges)) + geom_boxplot(outlier.size=0.5, color = 'green')
+p5=ggplot(insurance2, aes(as.factor(smoker), charges)) + geom_boxplot(outlier.size=0.5, color = 'blue')
+p6=ggplot(insurance2, aes(as.factor(region), charges)) + geom_boxplot(outlier.size=0.5, color = 'purple') + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 grid.arrange(p1,p2,p3,p4,p5,p6,nrow=2, ncol=3)
 ```
 
@@ -155,9 +176,9 @@ Now, we will explore whether or not we should include any interactions between c
 Here are some plots that show the interactions between these predictors.
 
 ```{r echo=FALSE}
-p_int1=ggplot(insurance2, aes(x = paste(sex, smoker), y = charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
-p_int2=ggplot(insurance2, aes(x = paste(sex, region), y = charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
-p_int3=ggplot(insurance2, aes(x = paste(region, smoker), y = charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
+p_int1=ggplot(insurance2, aes(x = paste(sex, smoker), y = charges)) + geom_boxplot(outlier.size=0.5, color = 'purple') + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
+p_int2=ggplot(insurance2, aes(x = paste(sex, region), y = charges)) + geom_boxplot(outlier.size=0.5, color = 'brown') + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
+p_int3=ggplot(insurance2, aes(x = paste(region, smoker), y = charges)) + geom_boxplot(outlier.size=0.5, color = 'darkblue') + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
 grid.arrange(p_int1,p_int2,p_int3, ncol=3)
 ```
 
@@ -194,18 +215,29 @@ Now, we will examine the numerical variables and see if there is evidence of any
 ```{r echo=FALSE}
 mod4 = lm(charges~age, data=insurance2)
 mod4_quad = lm(charges~age+I(age^2), data=insurance2)
-mod4_plot = ggplot(insurance2, aes(age, charges)) + geom_point(size=0.5) + 
+mod4_plot = ggplot(insurance2, aes(age, charges)) + geom_point(size=0.5, color = 'purple') + 
   geom_line(aes(y=fitted(mod4_quad), color = 'quadratic fit'))
 mod5 = lm(charges~bmi, data=insurance2)
 mod5_quad = lm(charges~bmi+I(bmi^2), data=insurance2)
-mod5_plot = ggplot(insurance2, aes(bmi, charges)) + geom_point(size=0.5) + 
+mod5_plot = ggplot(insurance2, aes(bmi, charges)) + geom_point(size=0.5, color = 'green') + 
   geom_line(aes(y=fitted(mod5_quad), color = 'quadratic fit'))
 mod6 = lm(charges~children, data=insurance2)
 mod6_quad = lm(charges~children+I(children^2), data=insurance2)
-mod6_plot = ggplot(insurance2, aes(children, charges)) + geom_point(size=0.5) + 
+mod6_plot = ggplot(insurance2, aes(children, charges)) + geom_point(size=0.5, color = 'blue') + 
   geom_line(aes(y=fitted(mod6_quad), color = 'quadratic fit'))
 grid.arrange(mod4_plot, mod5_plot, mod6_plot, nrow=2, ncol=2)
 ```
+
+
+```{r echo = FALSE}
+mod4_mse <- (mean((mod4[['residuals']])^2))
+mod5_mse <- (mean((mod5[['residuals']])^2))
+mod6_mse <- (mean((mod6[['residuals']])^2))
+mod4_rmse <- sqrt(mod4_mse)
+mod5_rmse <- sqrt(mod5_mse)
+mod6_rmse <- sqrt(mod6_mse)
+```
+
 
 Based on the plot of the quadratic fit for charges vs age, we see there is evidence of non-linearity for the predictor 'age' since the quadratic fit has some upward curvature.
 
@@ -223,5 +255,6 @@ Section 3.2: Use the Linear Regression model built in 1 to make predictions on a
 Section 3.3: Fit a different kind of model like a non-parametric regression, regularized regression models or others, and make a prediction on the same testing set.
 Section 3.4 (Optional): You can also try with other methods learnt in other classes if applicable (like for example Random Forests).
 
-Section 4: Discussion and conclusions
+\newpage
+## Section 4: Discussion and Conclusions
 In this part you should make a summary of your results  by comparing the different modeling approaches and discussing the impact of your analysis. You should also write the main conclusions of your analysis in three to four bullet points.
