@@ -1,0 +1,56 @@
+"0","library(ggplot2)"
+"0","library(gridExtra)"
+"0","# Reading the data from the file"
+"0","insurance = read.csv(""insurance.csv"")"
+"0","attach(insurance)"
+"2","The following objects are masked from insurance2 (pos = 3):
+
+    age, bmi, charges, children, region, sex, smoker
+
+"
+"2","The following objects are masked from insurance (pos = 4):
+
+    age, bmi, charges, children, region, sex, smoker
+
+"
+"2","The following objects are masked from insurance2 (pos = 5):
+
+    age, bmi, charges, children, region, sex, smoker
+
+"
+"2","The following objects are masked from insurance (pos = 6):
+
+    age, bmi, charges, children, region, sex, smoker
+
+"
+"2","The following objects are masked from insurance2 (pos = 7):
+
+    age, bmi, charges, children, region, sex, smoker
+
+"
+"2","The following objects are masked from insurance (pos = 8):
+
+    age, bmi, charges, children, region, sex, smoker
+
+"
+"2","The following objects are masked from insurance2 (pos = 11):
+
+    age, bmi, charges, children, region, sex, smoker
+
+"
+"2","The following objects are masked from insurance (pos = 12):
+
+    age, bmi, charges, children, region, sex, smoker
+
+"
+"2","The following objects are masked from insurance2 (pos = 13):
+
+    age, bmi, charges, children, region, sex, smoker
+
+"
+"2","The following objects are masked from insurance (pos = 14):
+
+    age, bmi, charges, children, region, sex, smoker
+
+"
+"0","insmod = lm(charges~., data = insurance)"

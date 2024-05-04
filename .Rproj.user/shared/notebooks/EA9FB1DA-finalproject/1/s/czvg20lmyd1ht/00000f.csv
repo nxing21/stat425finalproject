@@ -1,0 +1,7 @@
+"0","p1=ggplot(insurance2, aes(age, charges)) + geom_point(size=0.5)"
+"0","p2=ggplot(insurance2, aes(as.factor(sex), charges)) + geom_boxplot(outlier.size=0.5)"
+"0","p3=ggplot(insurance2, aes(bmi, charges)) + geom_point(size=0.5)"
+"0","p4=ggplot(insurance2, aes(as.factor(children), charges)) + geom_boxplot(outlier.size=0.5)"
+"0","p5=ggplot(insurance2, aes(as.factor(smoker), charges)) + geom_boxplot(outlier.size=0.5)"
+"0","p6=ggplot(insurance2, aes(as.factor(region), charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1))"
+"0","grid.arrange(p1,p2,p3,p4,p5,p6,nrow=2, ncol=3)"

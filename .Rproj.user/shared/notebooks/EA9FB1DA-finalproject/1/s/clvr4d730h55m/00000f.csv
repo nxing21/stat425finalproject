@@ -1,0 +1,4 @@
+"0","p_int1=ggplot(insurance2, aes(x = paste(sex, smoker), y = charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)"
+"0","p_int2=ggplot(insurance2, aes(x = paste(sex, region), y = charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)"
+"0","p_int3=ggplot(insurance2, aes(x = paste(region, smoker), y = charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)"
+"0","grid.arrange(p_int1,p_int2,p_int3, ncol=3)"

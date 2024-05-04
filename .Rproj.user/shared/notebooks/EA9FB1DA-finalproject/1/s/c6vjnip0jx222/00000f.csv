@@ -1,0 +1,6 @@
+"0","insmodreg = lm(charges ~ region, data=insurance2)"
+"0","anova(insmodreg)[1,5] # p-value of 'region'"
+"1","[1]"
+"1"," 0.04525914"
+"1","
+"
