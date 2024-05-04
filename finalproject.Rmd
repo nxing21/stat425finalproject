@@ -360,19 +360,44 @@ overfitting and multicollinearity, the choice between them would depend on the s
 
 ##Section 4: Discussion and Conclusions
 Summary of Results
-In this analysis, we employed various statistical models to predict health insurance costs using a dataset that included variables such as age, BMI, number of children, smoker status, and regional interactions. The results can be summarized as follows:
+In this analysis, we employed various statistical models to predict health insurance costs using a dataset that included variables such as age, BMI, number of children, smoker status, sex and regional interactions. The results can be summarized as follows:
 
 Linear Regression Model: Provided a solid baseline for understanding how different variables impact insurance costs. Significant predictors included age, BMI, and especially smoker status, which greatly increased predicted charges. However, the model sometimes overestimated or underestimated charges significantly.
 Ridge Regression Model: Adjusted predictions closer to actual values in some instances, suggesting its effectiveness in handling multicollinearity by shrinking coefficients but considering all variables.
 Lasso Regression Model: Offered predictions similar to the linear model but with adjustments likely due to its feature selection capability, which dropped less influential predictors.
-Comparative analysis showed that while the linear model was useful for understanding direct relationships and setting a baseline, both Ridge and Lasso provided nuanced insights by addressing overfitting and highlighting essential predictors.
+
+For the predictions, we apply to the test data set all the transformations made to the train data set. For each model, the predictions are obtained using the same command predict, and we evaluate the residual sum of squares, RSS.
+
+
+```{r echo=FALSE}
+actual_values <- testing_data$charges
+
+rss_linear <- sum((predictions - actual_values)^2)
+rss_ridge <- sum((ridge_predictions - actual_values)^2)
+rss_lasso <- sum((lasso_predictions - actual_values)^2)
+
+rss_summary <- data.frame(
+  Model = c("Linear Regression", "Ridge Regression", "Lasso Regression"),
+  RSS = c(rss_linear, rss_ridge, rss_lasso)
+)
+
+print(rss_summary)
+```
+
+Comparative analysis showed that while the linear model was useful for understanding direct relationships and setting a baseline, both Ridge and Lasso provided nuanced insights by addressing overfitting and highlighting essential predictors, but the Lasso regression model performs the best on the testing dataset.However, specific model selection should also consider other factors such as model interpretability, computational complexity, and so on.
+
 
 Impact of Analysis
 This analysis significantly enhances our understanding of factors influencing health insurance costs:
 
 Smoker Status: Emerged as a critical determinant of insurance costs, with smokers incurring significantly higher charges. This highlights the potential for insurance companies to adjust premiums or offer programs encouraging smoking cessation.
+
 Age and BMI: Both variables were also strong predictors of costs, aligning with expected health risk increases with age and higher BMI.
+
 Regional Differences: The interaction terms suggested that regional factors might also play a role in insurance costs, potentially due to environmental, policy, or lifestyle differences.
+
+
+
 Conclusions
 Smoking status is the most potent predictor of health insurance charges, suggesting targeted health initiatives could be beneficial.
 Age and BMI are important factors in predicting insurance costs, indicating that personalized insurance plans could be more effective.
