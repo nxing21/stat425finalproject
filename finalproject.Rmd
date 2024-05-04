@@ -33,23 +33,23 @@ insmod = lm(charges~., data = insurance)
 This project focuses on the analysis of medical insurance data, particularly focusing on the medical charges acquired from hospital visits. The response variable is the variable charges from the insurance data. This data is found on Kaggle, as was last updated 6 years ago, in 2018. 
   In this data set, there 6 variables excluding the response variable, charges, which shows the exact charges the patient acquired from their hospital visit. Each variable is defined within the Kaggle (2018) website and explained in this order:
 
-* age: age of primary beneficiary
+* age: Age of primary beneficiary
 
-* sex: insurance contractor gender, female, male
+* sex: Insurance contractor gender (female or male)
 
 * bmi: Body mass index, providing an understanding of body, weights that are relatively high or low relative to height,
 objective index of body weight (kg / m ^ 2) using the ratio of height to weight, ideally 18.5 to 24.9
 
 * children: Number of children covered by health insurance / Number of dependents
 
-* smoker: Smoking
+* smoker: Smoking (yes or no)
 
-* region: the beneficiary's residential area in the US, northeast, southeast, southwest, northwest.
+* region: Beneficiary's residential area in the US (northeast, southeast, southwest, northwest)
 
 * charges: Individual medical costs billed by health insurance
 
 
-  This report compares multiple models derived from analysis of the data set including an Explanatory Model, a Linear Regression Model, a Regression Tree, and a Random Forest.
+This report compares multiple models derived from analysis of the data set including an Explanatory Model, a Linear Regression Model, a Regression Tree, and a Random Forest.
   All analyses are performed in the R environment. This is possible to recreate with the code provided in this file.         Setting seeds might yield slightly different results; however, we did not use a seed to analyze this data. No function (i.e. _set.seed_) should change the results concluded from this data, although it is possible to slightly alter the data using said functions. Again, the results would be concluded the same way.
   This report has 4 sections. Section 1 is this introduction. Section 2 uses modelling assumptions and models to analyze the data and provide insights on the data. Section 3 presents predictive models and shows training from said models. Section 4 compares models and provides a discussion of these results.
 
@@ -81,11 +81,11 @@ stud <- rstudent(insmod)
 
 The first step is to check for unusual observations by performing an outlier test. To do so, we obtained the studentized residuals for our data, and compared the largest values with the Bonferroni critical value.
 
-This is the Bonferroni critical value we calculated:
-
-```{r echo=FALSE}
+```{r include=FALSE}
 qt(.05/(2*n), n-p-1) # Bonferroni critical value
 ```
+
+The Bonferroni critical value we calculated is -4.137174. Any observation with studentized residual higher than the absolute value of it will be considered an outlier.
 
 Next, here are the five largest studentized residuals, which we will be comparing to the Bonferroni critical value:
 
@@ -124,18 +124,18 @@ p3=ggplot(insurance2, aes(bmi, charges)) + geom_point(size=0.5)
 p4=ggplot(insurance2, aes(as.factor(children), charges)) + geom_boxplot(outlier.size=0.5, fill = c("red", "green", "blue", "orange", 'yellow', 'purple'))
 p5=ggplot(insurance2, aes(as.factor(smoker), charges)) + geom_boxplot(outlier.size=0.5, fill = c('green', 'red'))
 p6=ggplot(insurance2, aes(as.factor(region), charges)) + geom_boxplot(outlier.size=0.5, fill = c('red', 'blue', 'green', 'yellow')) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-grid.arrange(p1,p2,p3,p4,p5,p6,nrow=2, ncol=3)
+grid.arrange(p1,p2,p3,p4,p5,p6,nrow=2, ncol=3, bottom="Figure 1: Plot of Charges vs All Predictors")
 ```
 
 From the plot of charges vs age, we notice a trend that the charges increase as age increases. We will not be removing 'age' as a predictor since it is clear that it has a significant impact on the response variable 'charges'. This makes sense because as people grow older, their health declines, and the insurance costs increase.
 
 The charges vs sex boxplot tells us that males tend to have higher charges than females. We will conduct a t-test to test this difference.
 
-We obtained this p-value from the t-test:
-
-```{r echo=FALSE}
+```{r include=FALSE}
 t.test(charges ~ sex, data=insurance2, var.equal=TRUE)[3] # p-value of 'sex'
 ```
+
+From the t-test, we obtained a p-value of about 0.0346.
 
 Given that the p-value is less than 0.05, we conclude that 'sex' is a significant predictor, with males incurring higher insurance costs than females. A possible explanation for this is that males are usually more at risk of health conditions that result in increased charges compared to females.
 
@@ -143,12 +143,12 @@ From the plot of charges vs bmi, we can see a general trend that as bmi increase
 
 The boxplot of charges vs children conveys to us that charges tend to increase as the number of children grows from 0 or 1 to 2 or 3. While there are some data points for people with 4 or 5 children, it appears that these groups have a very low amount of people, and it may be challenging to draw meaningful conclusions from it. We perform an ANOVA test to test the significance of 'children' as a predictor.
 
-This is the p-value we obtain:
-
-```{r echo=FALSE}
+```{r include=FALSE}
 insmodchildren = lm(charges ~ children, data=insurance2)
 anova(insmodchildren)[1,5] # p-value of 'children'
 ```
+
+We obtained a p-value of approximately 0.00862.
 
 This p-value is less than 0.05, thus signifying that the predictor 'children' is significant. We will be keeping as a predictor in our model. A larger number of children/dependents covered leads to higher charges, as there are more individuals who need to be covered.
 
@@ -156,12 +156,12 @@ From the boxplot of charges vs smoker, it is evident that smokers generally face
 
 The boxplot of charges vs region shows us that the southeast region seemingly has higher charges than the other three regions. We will conduct an ANOVA test to make sure that the predictor 'region' is significant.
 
-This is the p-value we obtained from the ANOVA test:
-
-```{r echo=FALSE}
+```{r include=FALSE}
 insmodreg = lm(charges ~ region, data=insurance2)
 anova(insmodreg)[1,5] # p-value of 'region'
 ```
+
+From the ANOVA test, we obtained a p-value of about 0.0453.
 
 The p-value is less than 0.05, indicating that the predictor 'region' is significant, and thus we will retain it as a predictor. This confirms that there are regional differences in the insurance costs.
 
@@ -180,7 +180,7 @@ Here are some plots that show the interactions between these predictors.
 p_int1=ggplot(insurance2, aes(x = paste(sex, smoker), y = charges)) + geom_boxplot(outlier.size=0.5, fill = c('purple','pink', 'red', 'blue')) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
 p_int2=ggplot(insurance2, aes(x = paste(sex, region), y = charges)) + geom_boxplot(outlier.size=0.5, fill =  c("red", "green", "blue", "orange", 'yellow', 'purple', 'brown', 'pink')) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
 p_int3=ggplot(insurance2, aes(x = paste(region, smoker), y = charges)) + geom_boxplot(outlier.size=0.5, fill =  c("red", "green", "blue", "orange", 'yellow', 'purple', 'brown', 'pink')) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
-grid.arrange(p_int1,p_int2,p_int3, ncol=3)
+grid.arrange(p_int1,p_int2,p_int3, ncol=3, bottom="Figure 2: Plot of Charges vs Interactions Between Categorical Variables")
 ```
 
 From the plots, it appears as though smoking increases the charges more for males than females. Additionally, it seems like smoking has a greater impact on charges in the southeast and southwest, when compared to northeast and northwest. However, it does not appear that sex and region is a significant interaction.
@@ -210,7 +210,6 @@ insmodfinal = lm(charges~.+sex:smoker+region:smoker, data=insurance2)
 summary(insmodfinal)
 ```
 
-\newpage
 Now, we will examine the numerical variables and see if there is evidence of any nonlinear trends.
 
 ```{r echo=FALSE}
@@ -226,7 +225,7 @@ mod6 = lm(charges~children, data=insurance2)
 mod6_quad = lm(charges~children+I(children^2), data=insurance2)
 mod6_plot = ggplot(insurance2, aes(children, charges)) + geom_point(size=0.5) + 
   geom_line(aes(y=fitted(mod6_quad), color = 'quadratic fit'))
-grid.arrange(mod4_plot, mod5_plot, mod6_plot, nrow=2, ncol=2)
+grid.arrange(mod4_plot, mod5_plot, mod6_plot, nrow=2, ncol=2, bottom="Figure 3: Plot of Quadratic Fit for Charges vs Numerical Predictors")
 ```
 
 
