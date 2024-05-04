@@ -1,7 +1,7 @@
 ---
 title: |
   |
-  Hospital Insurance Charges Model\\
+  Hospital Insurance Charges Model
   \vspace{0.5cm}\
   Final for STAT 425
 author: 
@@ -117,12 +117,13 @@ summary(insmod2)
 After removing these two points, we will be analyzing the predictors to see if there are any variables we should add or remove.
 
 ```{r echo=FALSE}
-p1=ggplot(insurance2, aes(age, charges)) + geom_point(size=0.5, color = 'red') 
-p2=ggplot(insurance2, aes(as.factor(sex), charges)) + geom_boxplot(outlier.size=0.5, color = 'orange')
-p3=ggplot(insurance2, aes(bmi, charges)) + geom_point(size=0.5, color = 'yellow')
-p4=ggplot(insurance2, aes(as.factor(children), charges)) + geom_boxplot(outlier.size=0.5, color = 'green')
-p5=ggplot(insurance2, aes(as.factor(smoker), charges)) + geom_boxplot(outlier.size=0.5, color = 'blue')
-p6=ggplot(insurance2, aes(as.factor(region), charges)) + geom_boxplot(outlier.size=0.5, color = 'purple') + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+colors <- c("red", "green", "blue", "orange", 'yellow', 'purple')
+p1=ggplot(insurance2, aes(age, charges)) + geom_point(size=0.5) 
+p2=ggplot(insurance2, aes(as.factor(sex), charges)) + geom_boxplot(outlier.size=0.5, fill = c('pink', 'blue'))
+p3=ggplot(insurance2, aes(bmi, charges)) + geom_point(size=0.5)
+p4=ggplot(insurance2, aes(as.factor(children), charges)) + geom_boxplot(outlier.size=0.5, fill = c("red", "green", "blue", "orange", 'yellow', 'purple'))
+p5=ggplot(insurance2, aes(as.factor(smoker), charges)) + geom_boxplot(outlier.size=0.5, fill = c('green', 'red'))
+p6=ggplot(insurance2, aes(as.factor(region), charges)) + geom_boxplot(outlier.size=0.5, fill = c('red', 'blue', 'green', 'yellow')) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 grid.arrange(p1,p2,p3,p4,p5,p6,nrow=2, ncol=3)
 ```
 
@@ -176,9 +177,9 @@ Now, we will explore whether or not we should include any interactions between c
 Here are some plots that show the interactions between these predictors.
 
 ```{r echo=FALSE}
-p_int1=ggplot(insurance2, aes(x = paste(sex, smoker), y = charges)) + geom_boxplot(outlier.size=0.5, color = 'purple') + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
-p_int2=ggplot(insurance2, aes(x = paste(sex, region), y = charges)) + geom_boxplot(outlier.size=0.5, color = 'brown') + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
-p_int3=ggplot(insurance2, aes(x = paste(region, smoker), y = charges)) + geom_boxplot(outlier.size=0.5, color = 'darkblue') + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
+p_int1=ggplot(insurance2, aes(x = paste(sex, smoker), y = charges)) + geom_boxplot(outlier.size=0.5, fill = c('purple','pink', 'red', 'blue')) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
+p_int2=ggplot(insurance2, aes(x = paste(sex, region), y = charges)) + geom_boxplot(outlier.size=0.5, fill =  c("red", "green", "blue", "orange", 'yellow', 'purple', 'brown', 'pink')) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
+p_int3=ggplot(insurance2, aes(x = paste(region, smoker), y = charges)) + geom_boxplot(outlier.size=0.5, fill =  c("red", "green", "blue", "orange", 'yellow', 'purple', 'brown', 'pink')) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
 grid.arrange(p_int1,p_int2,p_int3, ncol=3)
 ```
 
@@ -215,15 +216,15 @@ Now, we will examine the numerical variables and see if there is evidence of any
 ```{r echo=FALSE}
 mod4 = lm(charges~age, data=insurance2)
 mod4_quad = lm(charges~age+I(age^2), data=insurance2)
-mod4_plot = ggplot(insurance2, aes(age, charges)) + geom_point(size=0.5, color = 'purple') + 
+mod4_plot = ggplot(insurance2, aes(age, charges)) + geom_point(size=0.5) + 
   geom_line(aes(y=fitted(mod4_quad), color = 'quadratic fit'))
 mod5 = lm(charges~bmi, data=insurance2)
 mod5_quad = lm(charges~bmi+I(bmi^2), data=insurance2)
-mod5_plot = ggplot(insurance2, aes(bmi, charges)) + geom_point(size=0.5, color = 'green') + 
+mod5_plot = ggplot(insurance2, aes(bmi, charges)) + geom_point(size=0.5) + 
   geom_line(aes(y=fitted(mod5_quad), color = 'quadratic fit'))
 mod6 = lm(charges~children, data=insurance2)
 mod6_quad = lm(charges~children+I(children^2), data=insurance2)
-mod6_plot = ggplot(insurance2, aes(children, charges)) + geom_point(size=0.5, color = 'blue') + 
+mod6_plot = ggplot(insurance2, aes(children, charges)) + geom_point(size=0.5) + 
   geom_line(aes(y=fitted(mod6_quad), color = 'quadratic fit'))
 grid.arrange(mod4_plot, mod5_plot, mod6_plot, nrow=2, ncol=2)
 ```
