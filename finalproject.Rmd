@@ -49,7 +49,7 @@ objective index of body weight (kg / m ^ 2) using the ratio of height to weight,
 * charges: Individual medical costs billed by health insurance
 
 
-This report compares multiple models derived from analysis of the data set including an Explanatory Model, a Linear Regression Model, a Regression Tree, and a Random Forest.
+This report compares multiple models derived from analysis of the data set including a Regression Model, an a Ridge Model, and a Lasso Model.
   All analyses are performed in the R environment. This is possible to recreate with the code provided in this file.         Setting seeds might yield slightly different results; however, we did not use a seed to analyze this data. No function (i.e. _set.seed_) should change the results concluded from this data, although it is possible to slightly alter the data using said functions. Again, the results would be concluded the same way.
   This report has 4 sections. Section 1 is this introduction. Section 2 uses modelling assumptions and models to analyze the data and provide insights on the data. Section 3 presents predictive models and shows training from said models. Section 4 compares models and provides a discussion of these results.
 
@@ -247,7 +247,7 @@ Finally, the plot of charges vs children also suggests some non-linearity. Howev
 
 \newpage
 ## Section 3: Methodology
-Section 3.1: Simple Model
+### Section 3.1: Simple Model
 Model Selection The choice of linear regression for this analysis is based on its efficacy in providing a clear and straightforward interpretation of how various predictors affect insurance charges. Linear regression is particularly valued for its ability to establish a baseline understanding of the relationships between variables, offering insights into the direct impacts of age, BMI, children count, smoking status,sex and regional differences on insurance costs.
 Variable Selection and Diagnostics 
 Age: A continuous variable expected to positively correlate with insurance charges. 
@@ -277,9 +277,9 @@ summary(model_lm)
 # Diagnostics - Check for normality and homoscedasticity
 par(mfrow=c(2,2))
 plot(model_lm)
-
+mtext("Figure 4: Diagnostic plots for the linear model", side = 1, line = 4, at = -0.01)
 ```
-Model Diagnostics The diagnostics conducted include:
+Model Diagnostics: The diagnostics conducted include:
 Multicollinearity Check: The Variance Inflation Factor (VIF) was calculated for all predictors, with results indicating minimal multicollinearity among the variables used. VIF values were as follows: age (1.00), BMI(1.05), children (1.00), smoker status (1.01), sex (1.00) and region(1.02). 
 Model Fit: The linear model was fitted with charges as the dependent variable. The R-squared value of 0.7612 suggests that about 76.12% of the variability in insurance charges is explained by the model, which is quite substantial for a simple linear model. 
 
@@ -303,11 +303,11 @@ Interaction of Smoking Status and Gender: This interaction term is significant, 
 
 These conclusions suggest that while the overall model performs well, the impact of certain variables like regions and interaction terms may require more complex models to more finely interpret these factors' effects on insurance costs. Further model validation and adjustments are also necessary to ensure the model's generalization capability and predictive accuracy across different datasets.
 
-Section 3.2: Predictions from Simple Model 
+### Section 3.2: Predictions from Simple Model 
 Model Implementation 
 The linear regression model was implemented using the lm() function in R, focusing on charges as the dependent variable. This model incorporates several predictors, including age, BMI, number of children, smoker status, and the interaction between smoker status and region, which were identified as significant in influencing insurance costs during the exploratory analysis.
 
-Testing and Predictions 
+Testing and Predictions: 
 To validate the effectiveness of the linear regression model, the dataset was split into
 training and testing subsets. Specifically, 80% of the data was used for training the model, and the remaining 20% served as the testing set. This division ensures that the model is tested on unseen data, providing a fair assessment of its predictive accuracy.
 
@@ -329,7 +329,7 @@ head(results)
 
 ```
 
-Predictive Performance Evaluation 
+Predictive Performance Evaluation: 
 The model was fitted on the training data and then used to make predictions on the testing set. Here are the results of the predictions for the first few observations:
 
 As observed, the model provides reasonable estimates for the charges, although there are noticeable differences between the actual and predicted values, suggesting areas for improvement.
@@ -338,18 +338,18 @@ The initial testing indicates that while the linear regression model captures ge
 potential need for more complex models that could better account for nuances in the data not captured by this simple linear model. The following sections will explore such models, comparing their predictions with those of the baseline linear model to identify the most effective approach for predicting insurance charges.
 
 
-Section 3.3: Advanced Models 
+### Section 3.3: Advanced Models 
 Model Types: Regularized Regression 
 To enhance the predictive accuracy and manage potential issues of multicollinearity and overfitting present in our linear regression model, we employed advanced modeling techniques such as Ridge and Lasso regression. These methods are forms of regularized regression that include a penalty term to the loss function:
 
 Ridge Regression (L2 regularization): Adds a penalty equal to the square of the magnitude of coefficients. This method is particularly effective in reducing the model complexity while still allowing the use of all variables. It helps in handling multicollinearity, preventing overfitting by shrinking the coefficients. 
 Lasso Regression (L1 regularization): Adds a penalty equivalent to the absolute value of the magnitude of coefficients. Unlike Ridge, Lasso can completely eliminate the weight of less important variables by setting their coefficients to zero. This results in feature selection within the model, which is beneficial when we need a sparse model with fewer variables.
 
-Implementation and Predictions 
+Implementation and Predictions: 
 Both models were implemented using the glmnet package in R, which efficiently handles large datasets and complex models with its capabilities for both Lasso and Ridge regression. The matrix of predictors x was derived from the training data, excluding the intercept to allow glmnet to handle regularization properly.
 The regularization parameter s was set to 0.01 for both models. This choice is typically subject to tuning through methods like cross-validation, but for simplicity, we’ve chosen a small but non-zero value, which demonstrates regularization without overly constraining the models.
 
-Predictive Performance Evaluation 
+Predictive Performance Evaluation: 
 The predictions made by the Ridge and Lasso models on the testing set were compared with the actual charges and those predicted by the simple linear model.
 
 
@@ -378,7 +378,7 @@ compare_results <- data.frame(
 )
 head(compare_results)
 ```
-Comparison and Conclusions 
+Comparison and Conclusions: 
 The Ridge and Lasso models both adjusted the predictions closer to actual values in some cases, compared to the basic linear model. However, they also introduced some variability, likely due to the influence of the regularization term balancing bias and variance differently:
 
 Ridge Model: It generally increased the estimates, potentially due to its nature of shrinking coefficients but not setting them to zero, thus still considering all input features. 
@@ -389,8 +389,8 @@ These results suggest that while both Ridge and Lasso offer advantages in terms 
 overfitting and multicollinearity, the choice between them would depend on the specific characteristics of the dataset and the goal of the analysis, with Lasso providing a sparser solution and Ridge offering stability across a broader range of data conditions. Further model tuning and cross-validation would be necessary to optimize their performances and fully assess their effectiveness compared to the simple linear model.
 
 
-
-##Section 4: Discussion and Conclusions
+\newpage
+## Section 4: Discussion and Conclusions
 Summary of Results
 In this analysis, we employed various statistical models to predict health insurance costs using a dataset that included variables such as age, BMI, number of children, smoker status, sex and regional interactions. The results can be summarized as follows:
 
