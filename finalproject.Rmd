@@ -7,7 +7,7 @@ title: |
 author: 
   - "Nick Xing: Section 2, combining files"
   - "Zihan Zhu: Sections 3 & 4" 
-  - "Noah Clark: Cover Page & Section 1"
+  - "Noah Clark: Cover Page & Section 1, formatting"
 date: "May 6, 2024"
 output: 
   pdf_document:
@@ -277,7 +277,7 @@ knitr::kable(vif_data)
 ```{r include=FALSE}
 # Building the linear model
 model_lm <- lm(charges ~ age + bmi + children + smoker + sex + region +  sex:smoker + smoker:region  , data = insurance2)
-summary(model_lm)
+knitr::kable(broom::tidy((model_lm)))
 
 # Diagnostics - Check for normality and homoscedasticity
 par(mfrow=c(2,2))
@@ -331,7 +331,7 @@ model_lm <- lm(charges ~ age + bmi + children + smoker + sex + region +  sex:smo
 predictions <- predict(model_lm, newdata = testing_data)
 results <- data.frame(Actual = testing_data$charges, Predicted = predictions)
 
-knitr::kable(results)
+knitr::kable(head(results))
 
 ```
 
@@ -385,7 +385,7 @@ compare_results <- data.frame(
   Ridge = as.vector(ridge_predictions),
   Lasso = as.vector(lasso_predictions)
 )
-knitr::kable(compare_results)
+knitr::kable(head(compare_results))
 ```
 Comparison and Conclusions:  
 The Ridge and Lasso models both adjusted the predictions closer to actual values in some cases, compared to the basic linear model. However, they also introduced some variability, likely due to the influence of the regularization term balancing bias and variance differently:
