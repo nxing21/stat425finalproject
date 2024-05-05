@@ -1,0 +1,6 @@
+"0","insmodchildren = lm(charges ~ children, data=insurance2)"
+"0","anova(insmodchildren)[1,5] # p-value of 'children'"
+"1","[1]"
+"1"," 0.008620164"
+"1","
+"

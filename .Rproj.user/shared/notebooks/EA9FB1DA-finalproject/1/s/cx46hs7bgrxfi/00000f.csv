@@ -1,0 +1,7 @@
+"0","# Checking for highly influential points (Cook's distance)"
+"0","cook = cooks.distance(insmod)"
+"0","max(cook)"
+"1","[1]"
+"1"," 0.01985676"
+"1","
+"

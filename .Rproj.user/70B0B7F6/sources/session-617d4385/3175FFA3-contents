@@ -1,22 +1,11 @@
 ---
-title: |
-  |
-  Hospital Insurance Charges Model
-  \vspace{0.5cm}\
-  Final for STAT 425
-author: 
-  - "Nick Xing"
-  - "Zihan Zhu"
-  - "Noah Clark"
-date: "May 6, 2024"
-output: 
-  pdf_document:
-    toc: yes
-    toc_depth: 3
-    keep_tex: yes  # This keeps the intermediate LaTeX file for debugging
-fontsize: 12pt
-mainfont: Arial
+title: "finalproject"
+output:
+  pdf_document: default
+  html_document: default
+date: "2024-04-07"
 ---
+
 
 ```{r include=FALSE}
 library(ggplot2)
@@ -27,31 +16,21 @@ attach(insurance)
 insmod = lm(charges~., data = insurance)
 ```
 
+Section 1: Introduction
+Provide a brief introduction of the goal of this final project. What is it all about? Where did you get the data from? What is the data framework? What are the main questions you want to answer with this data analysis?
 
-\newpage
-##  Section 1: Introduction
-This project focuses on the analysis of medical insurance data, particularly focusing on the medical charges acquired from hospital visits. The response variable is the variable charges from the insurance data. This data is found on Kaggle, as was last updated 6 years ago, in 2018. 
-  In this data set, there 6 variables excluding the response variable, charges, which shows the exact charges the patient acquired from their hospital visit. Each variable is defined within the Kaggle (2018) website and explained in this order:
+The data comes from the Kaggle data sets. The link can be found here: https://www.kaggle.com/datasets/mirichoi0218/insurance/data
 
-* age: Age of primary beneficiary
+Section 2: Exploratory Data Analysis
+Include some graphical displays and numerical summaries of the data. Also comment on any patterns/characteristics of the data which you find interesting or anything relevant to your later analysis.
 
-* sex: Insurance contractor gender (female or male)
+Provide a brief explanation/summary of variables you plan to include in your analysis. Here are some question you might ask:
 
-* bmi: Body mass index, providing an understanding of body, weights that are relatively high or low relative to height,
-objective index of body weight (kg / m ^ 2) using the ratio of height to weight, ideally 18.5 to 24.9
-
-* children: Number of children covered by health insurance / Number of dependents
-
-* smoker: Smoking (yes or no)
-
-* region: Beneficiary's residential area in the US (northeast, southeast, southwest, northwest)
-
-* charges: Individual medical costs billed by health insurance
-
-
-This report compares multiple models derived from analysis of the data set including an Explanatory Model, a Linear Regression Model, a Regression Tree, and a Random Forest.
-  All analyses are performed in the R environment. This is possible to recreate with the code provided in this file.         Setting seeds might yield slightly different results; however, we did not use a seed to analyze this data. No function (i.e. _set.seed_) should change the results concluded from this data, although it is possible to slightly alter the data using said functions. Again, the results would be concluded the same way.
-  This report has 4 sections. Section 1 is this introduction. Section 2 uses modelling assumptions and models to analyze the data and provide insights on the data. Section 3 presents predictive models and shows training from said models. Section 4 compares models and provides a discussion of these results.
+Which variables are categorical (when applicable) and which are numerical?
+Should we remove any unusual observations?
+Should we add or remove some variables in our analysis?
+For categorical variables (when applicable), should we include any interactions?
+For numerical variables, any evidence supporting nonlinear trends?
 
 \newpage
 ## Section 2: Exploratory Data Analysis
@@ -81,11 +60,11 @@ stud <- rstudent(insmod)
 
 The first step is to check for unusual observations by performing an outlier test. To do so, we obtained the studentized residuals for our data, and compared the largest values with the Bonferroni critical value.
 
-```{r include=FALSE}
+This is the Bonferroni critical value we calculated:
+
+```{r echo=FALSE}
 qt(.05/(2*n), n-p-1) # Bonferroni critical value
 ```
-
-The Bonferroni critical value we calculated is -4.137174. Any observation with studentized residual higher than the absolute value of it will be considered an outlier.
 
 Next, here are the five largest studentized residuals, which we will be comparing to the Bonferroni critical value:
 
@@ -117,25 +96,24 @@ summary(insmod2)
 After removing these two points, we will be analyzing the predictors to see if there are any variables we should add or remove.
 
 ```{r echo=FALSE}
-colors <- c("red", "green", "blue", "orange", 'yellow', 'purple')
-p1=ggplot(insurance2, aes(age, charges)) + geom_point(size=0.5) 
-p2=ggplot(insurance2, aes(as.factor(sex), charges)) + geom_boxplot(outlier.size=0.5, fill = c('pink', 'blue'))
+p1=ggplot(insurance2, aes(age, charges)) + geom_point(size=0.5)
+p2=ggplot(insurance2, aes(as.factor(sex), charges)) + geom_boxplot(outlier.size=0.5)
 p3=ggplot(insurance2, aes(bmi, charges)) + geom_point(size=0.5)
-p4=ggplot(insurance2, aes(as.factor(children), charges)) + geom_boxplot(outlier.size=0.5, fill = c("red", "green", "blue", "orange", 'yellow', 'purple'))
-p5=ggplot(insurance2, aes(as.factor(smoker), charges)) + geom_boxplot(outlier.size=0.5, fill = c('green', 'red'))
-p6=ggplot(insurance2, aes(as.factor(region), charges)) + geom_boxplot(outlier.size=0.5, fill = c('red', 'blue', 'green', 'yellow')) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-grid.arrange(p1,p2,p3,p4,p5,p6,nrow=2, ncol=3, bottom="Figure 1: Plot of Charges vs All Predictors")
+p4=ggplot(insurance2, aes(as.factor(children), charges)) + geom_boxplot(outlier.size=0.5)
+p5=ggplot(insurance2, aes(as.factor(smoker), charges)) + geom_boxplot(outlier.size=0.5)
+p6=ggplot(insurance2, aes(as.factor(region), charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+grid.arrange(p1,p2,p3,p4,p5,p6,nrow=2, ncol=3)
 ```
 
 From the plot of charges vs age, we notice a trend that the charges increase as age increases. We will not be removing 'age' as a predictor since it is clear that it has a significant impact on the response variable 'charges'. This makes sense because as people grow older, their health declines, and the insurance costs increase.
 
 The charges vs sex boxplot tells us that males tend to have higher charges than females. We will conduct a t-test to test this difference.
 
-```{r include=FALSE}
+We obtained this p-value from the t-test:
+
+```{r echo=FALSE}
 t.test(charges ~ sex, data=insurance2, var.equal=TRUE)[3] # p-value of 'sex'
 ```
-
-From the t-test, we obtained a p-value of about 0.0346.
 
 Given that the p-value is less than 0.05, we conclude that 'sex' is a significant predictor, with males incurring higher insurance costs than females. A possible explanation for this is that males are usually more at risk of health conditions that result in increased charges compared to females.
 
@@ -143,12 +121,12 @@ From the plot of charges vs bmi, we can see a general trend that as bmi increase
 
 The boxplot of charges vs children conveys to us that charges tend to increase as the number of children grows from 0 or 1 to 2 or 3. While there are some data points for people with 4 or 5 children, it appears that these groups have a very low amount of people, and it may be challenging to draw meaningful conclusions from it. We perform an ANOVA test to test the significance of 'children' as a predictor.
 
-```{r include=FALSE}
+This is the p-value we obtain:
+
+```{r echo=FALSE}
 insmodchildren = lm(charges ~ children, data=insurance2)
 anova(insmodchildren)[1,5] # p-value of 'children'
 ```
-
-We obtained a p-value of approximately 0.00862.
 
 This p-value is less than 0.05, thus signifying that the predictor 'children' is significant. We will be keeping as a predictor in our model. A larger number of children/dependents covered leads to higher charges, as there are more individuals who need to be covered.
 
@@ -156,12 +134,12 @@ From the boxplot of charges vs smoker, it is evident that smokers generally face
 
 The boxplot of charges vs region shows us that the southeast region seemingly has higher charges than the other three regions. We will conduct an ANOVA test to make sure that the predictor 'region' is significant.
 
-```{r include=FALSE}
+This is the p-value we obtained from the ANOVA test:
+
+```{r echo=FALSE}
 insmodreg = lm(charges ~ region, data=insurance2)
 anova(insmodreg)[1,5] # p-value of 'region'
 ```
-
-From the ANOVA test, we obtained a p-value of about 0.0453.
 
 The p-value is less than 0.05, indicating that the predictor 'region' is significant, and thus we will retain it as a predictor. This confirms that there are regional differences in the insurance costs.
 
@@ -177,10 +155,10 @@ Now, we will explore whether or not we should include any interactions between c
 Here are some plots that show the interactions between these predictors.
 
 ```{r echo=FALSE}
-p_int1=ggplot(insurance2, aes(x = paste(sex, smoker), y = charges)) + geom_boxplot(outlier.size=0.5, fill = c('purple','pink', 'red', 'blue')) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
-p_int2=ggplot(insurance2, aes(x = paste(sex, region), y = charges)) + geom_boxplot(outlier.size=0.5, fill =  c("red", "green", "blue", "orange", 'yellow', 'purple', 'brown', 'pink')) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
-p_int3=ggplot(insurance2, aes(x = paste(region, smoker), y = charges)) + geom_boxplot(outlier.size=0.5, fill =  c("red", "green", "blue", "orange", 'yellow', 'purple', 'brown', 'pink')) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
-grid.arrange(p_int1,p_int2,p_int3, ncol=3, bottom="Figure 2: Plot of Charges vs Interactions Between Categorical Variables")
+p_int1=ggplot(insurance2, aes(x = paste(sex, smoker), y = charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
+p_int2=ggplot(insurance2, aes(x = paste(sex, region), y = charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
+p_int3=ggplot(insurance2, aes(x = paste(region, smoker), y = charges)) + geom_boxplot(outlier.size=0.5) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(aspect.ratio=1)
+grid.arrange(p_int1,p_int2,p_int3, ncol=3)
 ```
 
 From the plots, it appears as though smoking increases the charges more for males than females. Additionally, it seems like smoking has a greater impact on charges in the southeast and southwest, when compared to northeast and northwest. However, it does not appear that sex and region is a significant interaction.
@@ -210,6 +188,7 @@ insmodfinal = lm(charges~.+sex:smoker+region:smoker, data=insurance2)
 summary(insmodfinal)
 ```
 
+\newpage
 Now, we will examine the numerical variables and see if there is evidence of any nonlinear trends.
 
 ```{r echo=FALSE}
@@ -225,19 +204,8 @@ mod6 = lm(charges~children, data=insurance2)
 mod6_quad = lm(charges~children+I(children^2), data=insurance2)
 mod6_plot = ggplot(insurance2, aes(children, charges)) + geom_point(size=0.5) + 
   geom_line(aes(y=fitted(mod6_quad), color = 'quadratic fit'))
-grid.arrange(mod4_plot, mod5_plot, mod6_plot, nrow=2, ncol=2, bottom="Figure 3: Plot of Quadratic Fit for Charges vs Numerical Predictors")
+grid.arrange(mod4_plot, mod5_plot, mod6_plot, nrow=2, ncol=2)
 ```
-
-
-```{r echo = FALSE}
-mod4_mse <- (mean((mod4[['residuals']])^2))
-mod5_mse <- (mean((mod5[['residuals']])^2))
-mod6_mse <- (mean((mod6[['residuals']])^2))
-mod4_rmse <- sqrt(mod4_mse)
-mod5_rmse <- sqrt(mod5_mse)
-mod6_rmse <- sqrt(mod6_mse)
-```
-
 
 Based on the plot of the quadratic fit for charges vs age, we see there is evidence of non-linearity for the predictor 'age' since the quadratic fit has some upward curvature.
 
@@ -392,45 +360,19 @@ overfitting and multicollinearity, the choice between them would depend on the s
 
 ##Section 4: Discussion and Conclusions
 Summary of Results
-In this analysis, we employed various statistical models to predict health insurance costs using a dataset that included variables such as age, BMI, number of children, smoker status, sex and regional interactions. The results can be summarized as follows:
+In this analysis, we employed various statistical models to predict health insurance costs using a dataset that included variables such as age, BMI, number of children, smoker status, and regional interactions. The results can be summarized as follows:
 
 Linear Regression Model: Provided a solid baseline for understanding how different variables impact insurance costs. Significant predictors included age, BMI, and especially smoker status, which greatly increased predicted charges. However, the model sometimes overestimated or underestimated charges significantly.
 Ridge Regression Model: Adjusted predictions closer to actual values in some instances, suggesting its effectiveness in handling multicollinearity by shrinking coefficients but considering all variables.
 Lasso Regression Model: Offered predictions similar to the linear model but with adjustments likely due to its feature selection capability, which dropped less influential predictors.
-
-For the predictions, we apply to the test data set all the transformations made to the train data set. For each model, the predictions are obtained using the same command predict, and we evaluate the residual sum of squares, RSS.
-
-
-```{r echo=FALSE}
-actual_values <- testing_data$charges
-
-rss_linear <- sum((predictions - actual_values)^2)
-rss_ridge <- sum((ridge_predictions - actual_values)^2)
-rss_lasso <- sum((lasso_predictions - actual_values)^2)
-
-rss_summary <- data.frame(
-  Model = c("Linear Regression", "Ridge Regression", "Lasso Regression"),
-  RSS = c(rss_linear, rss_ridge, rss_lasso)
-  
-)
-
-print(rss_summary)
-```
-
-Comparative analysis showed that while the linear model was useful for understanding direct relationships and setting a baseline, both Ridge and Lasso provided nuanced insights by addressing overfitting and highlighting essential predictors, but the Lasso regression model performs the best on the testing dataset.However, specific model selection should also consider other factors such as model interpretability, computational complexity, and so on.
-
+Comparative analysis showed that while the linear model was useful for understanding direct relationships and setting a baseline, both Ridge and Lasso provided nuanced insights by addressing overfitting and highlighting essential predictors.
 
 Impact of Analysis
 This analysis significantly enhances our understanding of factors influencing health insurance costs:
 
 Smoker Status: Emerged as a critical determinant of insurance costs, with smokers incurring significantly higher charges. This highlights the potential for insurance companies to adjust premiums or offer programs encouraging smoking cessation.
-
 Age and BMI: Both variables were also strong predictors of costs, aligning with expected health risk increases with age and higher BMI.
-
 Regional Differences: The interaction terms suggested that regional factors might also play a role in insurance costs, potentially due to environmental, policy, or lifestyle differences.
-
-
-
 Conclusions
 Smoking status is the most potent predictor of health insurance charges, suggesting targeted health initiatives could be beneficial.
 Age and BMI are important factors in predicting insurance costs, indicating that personalized insurance plans could be more effective.
