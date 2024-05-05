@@ -91,7 +91,7 @@ The Bonferroni critical value we calculated is -4.137174. Any observation with s
 Next, here are the five largest studentized residuals, which we will be comparing to the Bonferroni critical value:
 
 ```{r echo=FALSE}
-knitr::kable(sort(abs(stud), decreasing=TRUE)[1:5]) # largest 5 studentized residuals
+knitr::kable(sort(abs(stud), decreasing=TRUE)[1:5], col.names = c("Observation Number", "Studentized Residual")) # largest 5 studentized residuals
 # 1301 and 578 are unusual observations, we should remove them
 # leverage values for highly influential points (?)
 # Cook's distance
@@ -249,17 +249,19 @@ Finally, the plot of charges vs children also suggests some non-linearity. Howev
 \newpage
 ## Section 3: Methodology
 ### Section 3.1: Simple Model
-Model Selection The choice of linear regression for this analysis is based on its efficacy in providing a clear and straightforward interpretation of how various predictors affect insurance charges. Linear regression is particularly valued for its ability to establish a baseline understanding of the relationships between variables, offering insights into the direct impacts of age, BMI, children count, smoking status,sex and regional differences on insurance costs.
-Variable Selection and Diagnostics 
-Age: A continuous variable expected to positively correlate with insurance charges. 
+Model Selection  
+The choice of linear regression for this analysis is based on its efficacy in providing a clear and straightforward interpretation of how various predictors affect insurance charges. Linear regression is particularly valued for its ability to establish a baseline understanding of the relationships between variables, offering insights into the direct impacts of age, BMI, children count, smoking status,sex and regional differences on insurance costs.  
+
+Variable Selection and Diagnostics  
+Age: A continuous variable expected to positively correlate with insurance charges.  
 BMI: Another continuous variable, which is hypothesized to influence insurance costs due to its
-association with health risks. 
-Children: A discrete variable that represents the number of dependents,potentially affecting insurance premiums. 
-Smoker Status: A categorical variable that significantly impacts insurance costs, as identified in the exploratory analysis. 
-Sex:A categorical variable, often considered in insurance cost analysis because gender may influence health risks and insurance premiums.
-Region: As a categorical variable, the region captures variations in insurance costs across different geographical locations.
-Sex and Smoker Interaction: This interaction term examines how gender and smoking status jointly influence insurance costs. Smokers of different genders may face different health risks, which can be reflected in their insurance premiums.
-Region and Smoker Interaction: This interaction term was included to examine if the impact of smoking on insurance charges varies by region, which could suggest regional variations in healthcare costs or lifestyle patterns.
+association with health risks.  
+Children: A discrete variable that represents the number of dependents,potentially affecting insurance premiums.  
+Smoker Status: A categorical variable that significantly impacts insurance costs, as identified in the exploratory analysis.   
+Sex: A categorical variable, often considered in insurance cost analysis because gender may influence health risks and insurance premiums.  
+Region: As a categorical variable, the region captures variations in insurance costs across different geographical locations.  
+Sex and Smoker Interaction: This interaction term examines how gender and smoking status jointly influence insurance costs. Smokers of different genders may face different health risks, which can be reflected in their insurance premiums.  
+Region and Smoker Interaction: This interaction term was included to examine if the impact of smoking on insurance charges varies by region, which could suggest regional variations in healthcare costs or lifestyle patterns.  
 
 ```{r include=FALSE}
 library(caret)
@@ -270,7 +272,9 @@ library(car)
 # Checking multicollinearity
 vif_data <- vif(lm(charges ~ age + bmi + children + smoker + sex + region, data = insurance2))
 knitr::kable(vif_data)
+```
 
+```{r include=FALSE}
 # Building the linear model
 model_lm <- lm(charges ~ age + bmi + children + smoker + sex + region +  sex:smoker + smoker:region  , data = insurance2)
 summary(model_lm)
@@ -278,37 +282,38 @@ summary(model_lm)
 # Diagnostics - Check for normality and homoscedasticity
 par(mfrow=c(2,2))
 plot(model_lm)
-mtext("Figure 4: Diagnostic plots for the linear model", side = 1, line = 4, at = -0.01)
+mtext("Figure 4: Diagnostic Plots for the Linear Model", side = 1, line = 4, at = -0.01)
 ```
-Model Diagnostics: The diagnostics conducted include:
-Multicollinearity Check: The Variance Inflation Factor (VIF) was calculated for all predictors, with results indicating minimal multicollinearity among the variables used. VIF values were as follows: age (1.00), BMI(1.05), children (1.00), smoker status (1.01), sex (1.00) and region(1.02). 
-Model Fit: The linear model was fitted with charges as the dependent variable. The R-squared value of 0.7612 suggests that about 76.12% of the variability in insurance charges is explained by the model, which is quite substantial for a simple linear model. 
+Model Diagnostics:  
+The diagnostics conducted include:  
+Multicollinearity Check: The Variance Inflation Factor (VIF) was calculated for all predictors, with results indicating minimal multicollinearity among the variables used. VIF values were as follows: age (1.00), BMI(1.05), children (1.00), smoker status (1.01), sex (1.00) and region(1.02).  
 
-Residual Analysis: Residuals: The residuals’ plot indicated that while there is some spread, major deviations from normality or constant variance (homoscedasticity) were not apparent, suggesting that the model assumptions are reasonably met. 
+Model Fit: The linear model was fitted with charges as the dependent variable. The R-squared value of 0.7612 suggests that about 76.12% of the variability in insurance charges is explained by the model, which is quite substantial for a simple linear model.  
 
-Coefficients: 
-Intercept: The model's intercept is significantly negative, which might indicate that the baseline insurance charges are negative when all other variables are zero. This could suggest that further adjustments to the model might be necessary.
+Residual Analysis: Residuals: The residuals’ plot indicated that while there is some spread, major deviations from normality or constant variance (homoscedasticity) were not apparent, suggesting that the model assumptions are reasonably met.  
 
-Age: The coefficient for age is significant and positive, indicating that insurance charges increase with age. This aligns with the general logic of insurance pricing, where increased age is associated with higher health risks.
+Coefficients:  
+Intercept: The model's intercept is significantly negative, which might indicate that the baseline insurance charges are negative when all other variables are zero. This could suggest that further adjustments to the model might be necessary.  
 
-BMI: The coefficient for BMI is also significantly positive, suggesting that higher BMI is associated with higher insurance charges, likely due to increased health risks associated with higher BMI.
+Age: The coefficient for age is significant and positive, indicating that insurance charges increase with age. This aligns with the general logic of insurance pricing, where increased age is associated with higher health risks.  
 
-Children: The coefficient for the number of children is significant and positive, indicating that having more children leads to higher insurance charges, possibly reflecting the greater healthcare needs of larger families.
+BMI: The coefficient for BMI is also significantly positive, suggesting that higher BMI is associated with higher insurance charges, likely due to increased health risks associated with higher BMI.  
 
-Significant Impact of Smoking Status: The coefficient for smokers is significantly higher than for non-smokers, consistent with previous studies indicating that smoking is a significant factor affecting insurance costs.
+Children: The coefficient for the number of children is significant and positive, indicating that having more children leads to higher insurance charges, possibly reflecting the greater healthcare needs of larger families.  
 
-Interactions of Region and Gender:
-Region Coefficients: Some regional categories, such as southeast and southwest, are significant, suggesting that insurance costs in these regions are higher compared to the baseline region.
+Significant Impact of Smoking Status: The coefficient for smokers is significantly higher than for non-smokers, consistent with previous studies indicating that smoking is a significant factor affecting insurance costs.  
 
-Interaction of Smoking Status and Gender: This interaction term is significant, indicating that the combination of smoking status and gender has a specific impact on insurance charges, particularly for male smokers who may face higher charges.
+Interactions of Region and Gender: Some regional categories, such as southeast and southwest, are significant, suggesting that insurance costs in these regions are higher compared to the baseline region.  
+
+Interaction of Smoking Status and Gender: This interaction term is significant, indicating that the combination of smoking status and gender has a specific impact on insurance charges, particularly for male smokers who may face higher charges.  
 
 These conclusions suggest that while the overall model performs well, the impact of certain variables like regions and interaction terms may require more complex models to more finely interpret these factors' effects on insurance costs. Further model validation and adjustments are also necessary to ensure the model's generalization capability and predictive accuracy across different datasets.
 
 ### Section 3.2: Predictions from Simple Model 
-Model Implementation 
+Model Implementation:  
 The linear regression model was implemented using the lm() function in R, focusing on charges as the dependent variable. This model incorporates several predictors, including age, BMI, number of children, smoker status, and the interaction between smoker status and region, which were identified as significant in influencing insurance costs during the exploratory analysis.
 
-Testing and Predictions: 
+Testing and Predictions:  
 To validate the effectiveness of the linear regression model, the dataset was split into
 training and testing subsets. Specifically, 80% of the data was used for training the model, and the remaining 20% served as the testing set. This division ensures that the model is tested on unseen data, providing a fair assessment of its predictive accuracy.
 
@@ -330,7 +335,7 @@ knitr::kable(results)
 
 ```
 
-Predictive Performance Evaluation: 
+Predictive Performance Evaluation:  
 The model was fitted on the training data and then used to make predictions on the testing set. Here are the results of the predictions for the first few observations:
 
 As observed, the model provides reasonable estimates for the charges, although there are noticeable differences between the actual and predicted values, suggesting areas for improvement.
@@ -340,21 +345,22 @@ potential need for more complex models that could better account for nuances in 
 
 
 ### Section 3.3: Advanced Models 
-Model Types: Regularized Regression 
-To enhance the predictive accuracy and manage potential issues of multicollinearity and overfitting present in our linear regression model, we employed advanced modeling techniques such as Ridge and Lasso regression. These methods are forms of regularized regression that include a penalty term to the loss function:
+Model Types:  
+Regularized Regression: To enhance the predictive accuracy and manage potential issues of multicollinearity and overfitting present in our linear regression model, we employed advanced modeling techniques such as Ridge and Lasso regression. These methods are forms of regularized regression that include a penalty term to the loss function:
 
-Ridge Regression (L2 regularization): Adds a penalty equal to the square of the magnitude of coefficients. This method is particularly effective in reducing the model complexity while still allowing the use of all variables. It helps in handling multicollinearity, preventing overfitting by shrinking the coefficients. 
+Ridge Regression (L2 regularization): Adds a penalty equal to the square of the magnitude of coefficients. This method is particularly effective in reducing the model complexity while still allowing the use of all variables. It helps in handling multicollinearity, preventing overfitting by shrinking the coefficients.  
+
 Lasso Regression (L1 regularization): Adds a penalty equivalent to the absolute value of the magnitude of coefficients. Unlike Ridge, Lasso can completely eliminate the weight of less important variables by setting their coefficients to zero. This results in feature selection within the model, which is beneficial when we need a sparse model with fewer variables.
 
 Implementation and Predictions: 
 Both models were implemented using the glmnet package in R, which efficiently handles large datasets and complex models with its capabilities for both Lasso and Ridge regression. The matrix of predictors x was derived from the training data, excluding the intercept to allow glmnet to handle regularization properly.
-The regularization parameter s was set to 0.01 for both models. This choice is typically subject to tuning through methods like cross-validation, but for simplicity, we’ve chosen a small but non-zero value, which demonstrates regularization without overly constraining the models.
+The regularization parameter s was set to 0.01 for both models. This choice is typically subject to tuning through methods like cross-validation, but for simplicity, we’ve chosen a small but non-zero value, which demonstrates regularization without overly constraining the models.  
 
 Predictive Performance Evaluation: 
 The predictions made by the Ridge and Lasso models on the testing set were compared with the actual charges and those predicted by the simple linear model.
 
 
-```{r echo=FALSE}
+```{r include=FALSE}
 # Load the library for Ridge and Lasso
 library(glmnet)
 
@@ -369,7 +375,9 @@ lasso_model <- glmnet(x, y, alpha = 1)
 # Making predictions on the testing set
 ridge_predictions <- predict(ridge_model, s = 0.01, newx = model.matrix(~ age + bmi + children + smoker + sex + region +  sex:smoker + smoker:region, data = testing_data)[,-1])
 lasso_predictions <- predict(lasso_model, s = 0.01, newx = model.matrix(~ age + bmi + children + smoker + sex + region +  sex:smoker + smoker:region, data = testing_data)[,-1])
+```
 
+```{r echo=FALSE}
 # Comparing models
 compare_results <- data.frame(
   Actual = testing_data$charges,
@@ -379,7 +387,7 @@ compare_results <- data.frame(
 )
 knitr::kable(compare_results)
 ```
-Comparison and Conclusions: 
+Comparison and Conclusions:  
 The Ridge and Lasso models both adjusted the predictions closer to actual values in some cases, compared to the basic linear model. However, they also introduced some variability, likely due to the influence of the regularization term balancing bias and variance differently:
 
 Ridge Model: It generally increased the estimates, potentially due to its nature of shrinking coefficients but not setting them to zero, thus still considering all input features. 
@@ -392,12 +400,12 @@ overfitting and multicollinearity, the choice between them would depend on the s
 
 \newpage
 ## Section 4: Discussion and Conclusions
-Summary of Results
+**Summary of Results**  
 In this analysis, we employed various statistical models to predict health insurance costs using a dataset that included variables such as age, BMI, number of children, smoker status, sex and regional interactions. The results can be summarized as follows:
 
-Linear Regression Model: Provided a solid baseline for understanding how different variables impact insurance costs. Significant predictors included age, BMI, and especially smoker status, which greatly increased predicted charges. However, the model sometimes overestimated or underestimated charges significantly.
-Ridge Regression Model: Adjusted predictions closer to actual values in some instances, suggesting its effectiveness in handling multicollinearity by shrinking coefficients but considering all variables.
-Lasso Regression Model: Offered predictions similar to the linear model but with adjustments likely due to its feature selection capability, which dropped less influential predictors.
+Linear Regression Model: Provided a solid baseline for understanding how different variables impact insurance costs. Significant predictors included age, BMI, and especially smoker status, which greatly increased predicted charges. However, the model sometimes overestimated or underestimated charges significantly.  
+Ridge Regression Model: Adjusted predictions closer to actual values in some instances, suggesting its effectiveness in handling multicollinearity by shrinking coefficients but considering all variables.  
+Lasso Regression Model: Offered predictions similar to the linear model but with adjustments likely due to its feature selection capability, which dropped less influential predictors.  
 
 For the predictions, we apply to the test data set all the transformations made to the train data set. For each model, the predictions are obtained using the same command predict, and we evaluate the residual sum of squares, RSS.
 
@@ -419,19 +427,16 @@ knitr::kable(rss_summary)
 
 Comparative analysis showed that while the linear model was useful for understanding direct relationships and setting a baseline, both Ridge and Lasso provided nuanced insights by addressing overfitting and highlighting essential predictors, but the Lasso regression model performs the best on the testing dataset.However, specific model selection should also consider other factors such as model interpretability, computational complexity, and so on.
 
+**Impact of Analysis**  
+This analysis significantly enhances our understanding of factors influencing health insurance costs:  
 
-Impact of Analysis
-This analysis significantly enhances our understanding of factors influencing health insurance costs:
+Smoker Status: Emerged as a critical determinant of insurance costs, with smokers incurring significantly higher charges. This highlights the potential for insurance companies to adjust premiums or offer programs encouraging smoking cessation.  
 
-Smoker Status: Emerged as a critical determinant of insurance costs, with smokers incurring significantly higher charges. This highlights the potential for insurance companies to adjust premiums or offer programs encouraging smoking cessation.
+Age and BMI: Both variables were also strong predictors of costs, aligning with expected health risk increases with age and higher BMI.  
 
-Age and BMI: Both variables were also strong predictors of costs, aligning with expected health risk increases with age and higher BMI.
+Regional Differences: The interaction terms suggested that regional factors might also play a role in insurance costs, potentially due to environmental, policy, or lifestyle differences.  
 
-Regional Differences: The interaction terms suggested that regional factors might also play a role in insurance costs, potentially due to environmental, policy, or lifestyle differences.
-
-
-
-Conclusions
+**Conclusions**  
 Smoking status is the most potent predictor of health insurance charges, suggesting targeted health initiatives could be beneficial.
 Age and BMI are important factors in predicting insurance costs, indicating that personalized insurance plans could be more effective.
 Regularized regression models (Ridge and Lasso) are valuable for refining predictions and identifying key predictors, particularly in datasets prone to multicollinearity.
