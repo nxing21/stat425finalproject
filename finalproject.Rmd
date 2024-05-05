@@ -204,7 +204,7 @@ anova(mod3)
 # we find that both sex:smoker and smoker:region are significant interactions, so we keep them in the final model
 ```
 
-We applied sequential F-tests with the anova function to assess the significance of the interaction terms in our model. Initially, we included all potential interactions among the three variables 'sex', 'smoker', and 'region'. We first found that the second-order interaction sex:smoker:region was not significant, and removed it from the model. Subsequently, we tested the first-order interactions and found that the interaction sex:region was not significant. Finally, after removing sex:region as a predictor, we concluded that only the interactions sex:smoker and smoker:region are statistically significant, and we will retain them in the final model.
+We applied sequential F-tests with the anova function to assess the significance of the interaction terms in our model. Initially, we included all potential interactions among the three variables 'sex', 'smoker', and 'region'. We first found that the second-order interaction sex:smoker:region had p-value of 0.5733588, so we concluded that it is not significant and removed it from the model. Subsequently, we tested the first-order interactions and found that the interaction sex:region was not significant, since it had p-value of 0.995089. Finally, after removing sex:region as a predictor, we obtained a p-value of 0.00121263 and 1.478e-05 for sex:smoker and smoker:region, respectively. Ultimately, we conclude that only the interactions sex:smoker and smoker:region are statistically significant, and we will retain them in the final model.
 
 ```{r include=FALSE}
 insmodfinal = lm(charges~.+sex:smoker+region:smoker, data=insurance2)
