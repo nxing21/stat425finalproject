@@ -7,7 +7,7 @@ title: |
 author: 
   - "Nick Xing: Section 2, combining files"
   - "Zihan Zhu: Sections 3 & 4" 
-  - "Noah Clark: Cover Page & Section 1"
+  - "Noah Clark: Cover Page & Section 1, formatting"
 date: "May 6, 2024"
 output: 
   pdf_document:
