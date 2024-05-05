@@ -379,6 +379,7 @@ rss_lasso <- sum((lasso_predictions - actual_values)^2)
 rss_summary <- data.frame(
   Model = c("Linear Regression", "Ridge Regression", "Lasso Regression"),
   RSS = c(rss_linear, rss_ridge, rss_lasso)
+  
 )
 
 print(rss_summary)
