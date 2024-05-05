@@ -186,8 +186,13 @@ Next, here are the five largest studentized residuals, which we will be
 comparing to the Bonferroni critical value:
 
 \begin{longtable}[]{@{}lr@{}}
+\caption{Largest 5 Studentized Residuals}\tabularnewline
 \toprule\noalign{}
-& x \\
+Observation Number & Studentized Residual \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Observation Number & Studentized Residual \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
@@ -303,12 +308,15 @@ We applied sequential F-tests with the anova function to assess the
 significance of the interaction terms in our model. Initially, we
 included all potential interactions among the three variables `sex',
 `smoker', and `region'. We first found that the second-order interaction
-sex:smoker:region was not significant, and removed it from the model.
-Subsequently, we tested the first-order interactions and found that the
-interaction sex:region was not significant. Finally, after removing
-sex:region as a predictor, we concluded that only the interactions
-sex:smoker and smoker:region are statistically significant, and we will
-retain them in the final model.
+sex:smoker:region had p-value of 0.5733588, so we concluded that it is
+not significant and removed it from the model. Subsequently, we tested
+the first-order interactions and found that the interaction sex:region
+was not significant, since it had p-value of 0.995089. Finally, after
+removing sex:region as a predictor, we obtained a p-value of 0.00121263
+and 1.478e-05 for sex:smoker and smoker:region, respectively.
+Ultimately, we conclude that only the interactions sex:smoker and
+smoker:region are statistically significant, and we will retain them in
+the final model.
 
 Now, we will examine the numerical variables and see if there is
 evidence of any nonlinear trends.
@@ -338,33 +346,43 @@ conclusion.
 \subsubsection{Section 3.1: Simple
 Model}\label{section-3.1-simple-model}
 
-Model Selection The choice of linear regression for this analysis is
-based on its efficacy in providing a clear and straightforward
-interpretation of how various predictors affect insurance charges.
-Linear regression is particularly valued for its ability to establish a
-baseline understanding of the relationships between variables, offering
-insights into the direct impacts of age, BMI, children count, smoking
-status,sex and regional differences on insurance costs. Variable
-Selection and Diagnostics Age: A continuous variable expected to
-positively correlate with insurance charges. BMI: Another continuous
-variable, which is hypothesized to influence insurance costs due to its
-association with health risks. Children: A discrete variable that
-represents the number of dependents,potentially affecting insurance
-premiums. Smoker Status: A categorical variable that significantly
-impacts insurance costs, as identified in the exploratory analysis.
-Sex:A categorical variable, often considered in insurance cost analysis
-because gender may influence health risks and insurance premiums.
+Model Selection\\
+The choice of linear regression for this analysis is based on its
+efficacy in providing a clear and straightforward interpretation of how
+various predictors affect insurance charges. Linear regression is
+particularly valued for its ability to establish a baseline
+understanding of the relationships between variables, offering insights
+into the direct impacts of age, BMI, children count, smoking status,sex
+and regional differences on insurance costs.
+
+Variable Selection and Diagnostics\\
+Age: A continuous variable expected to positively correlate with
+insurance charges.\\
+BMI: Another continuous variable, which is hypothesized to influence
+insurance costs due to its association with health risks.\\
+Children: A discrete variable that represents the number of
+dependents,potentially affecting insurance premiums.\\
+Smoker Status: A categorical variable that significantly impacts
+insurance costs, as identified in the exploratory analysis.\\
+Sex: A categorical variable, often considered in insurance cost analysis
+because gender may influence health risks and insurance premiums.\\
 Region: As a categorical variable, the region captures variations in
-insurance costs across different geographical locations. Sex and Smoker
-Interaction: This interaction term examines how gender and smoking
-status jointly influence insurance costs. Smokers of different genders
-may face different health risks, which can be reflected in their
-insurance premiums. Region and Smoker Interaction: This interaction term
-was included to examine if the impact of smoking on insurance charges
-varies by region, which could suggest regional variations in healthcare
-costs or lifestyle patterns.
+insurance costs across different geographical locations.\\
+Sex and Smoker Interaction: This interaction term examines how gender
+and smoking status jointly influence insurance costs. Smokers of
+different genders may face different health risks, which can be
+reflected in their insurance premiums.\\
+Region and Smoker Interaction: This interaction term was included to
+examine if the impact of smoking on insurance charges varies by region,
+which could suggest regional variations in healthcare costs or lifestyle
+patterns.
 
 \begin{longtable}[]{@{}lrrr@{}}
+\caption{Variance Inflation Factors of Linear Model}\tabularnewline
+\toprule\noalign{}
+& GVIF & Df & GVIF\^{}(1/(2*Df)) \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 & GVIF & Df & GVIF\^{}(1/(2*Df)) \\
 \midrule\noalign{}
@@ -379,52 +397,14 @@ sex & 1.009150 & 1 & 1.004565 \\
 region & 1.099632 & 3 & 1.015955 \\
 \end{longtable}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.3662}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1690}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1549}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1690}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1408}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-term
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-estimate
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-std.error
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-statistic
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-p.value
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-(Intercept) & -10872.7813 & 980.81424 & -11.0854644 & 0.0000000 \\
-age & 256.7318 & 11.56610 & 22.1969119 & 0.0000000 \\
-bmi & 329.4601 & 27.83512 & 11.8361296 & 0.0000000 \\
-children & 493.4100 & 133.84574 & 3.6864081 & 0.0002366 \\
-smokeryes & 19484.2187 & 931.12076 & 20.9255550 & 0.0000000 \\
-sexmale & -600.9312 & 360.92352 & -1.6649820 & 0.0961531 \\
-regionnorthwest & -506.4314 & 514.04704 & -0.9851849 & 0.3247134 \\
-regionsoutheast & -2272.7675 & 524.13906 & -4.3361918 & 0.0000156 \\
-regionsouthwest & -1748.1011 & 515.08692 & -3.3937983 & 0.0007097 \\
-smokeryes:sexmale & 2163.4193 & 812.24909 & 2.6634924 & 0.0078273 \\
-smokeryes:regionnorthwest & 978.9794 & 1178.49340 & 0.8307041 &
-0.4062907 \\
-smokeryes:regionsoutheast & 5661.0242 & 1082.01632 & 5.2319212 &
-0.0000002 \\
-smokeryes:regionsouthwest & 4329.6030 & 1178.68617 & 3.6732449 &
-0.0002490 \\
-\end{longtable}
+Model Diagnostics:\\
+The diagnostics conducted include:\\
+Multicollinearity Check: The Variance Inflation Factor (VIF) was
+calculated for all predictors, with results indicating minimal
+multicollinearity among the variables used. VIF values were as follows:
+age (1.00), BMI(1.05), children (1.00), smoker status (1.01), sex (1.00)
+and region(1.02).
 
-\includegraphics{finalproject_files/figure-latex/unnamed-chunk-19-1.pdf}
-Model Diagnostics: The diagnostics conducted include: Multicollinearity
-Check: The Variance Inflation Factor (VIF) was calculated for all
-predictors, with results indicating minimal multicollinearity among the
-variables used. VIF values were as follows: age (1.00), BMI(1.05),
-children (1.00), smoker status (1.01), sex (1.00) and region(1.02).
 Model Fit: The linear model was fitted with charges as the dependent
 variable. The R-squared value of 0.7612 suggests that about 76.12\% of
 the variability in insurance charges is explained by the model, which is
@@ -435,10 +415,11 @@ there is some spread, major deviations from normality or constant
 variance (homoscedasticity) were not apparent, suggesting that the model
 assumptions are reasonably met.
 
-Coefficients: Intercept: The model's intercept is significantly
-negative, which might indicate that the baseline insurance charges are
-negative when all other variables are zero. This could suggest that
-further adjustments to the model might be necessary.
+Coefficients:\\
+Intercept: The model's intercept is significantly negative, which might
+indicate that the baseline insurance charges are negative when all other
+variables are zero. This could suggest that further adjustments to the
+model might be necessary.
 
 Age: The coefficient for age is significant and positive, indicating
 that insurance charges increase with age. This aligns with the general
@@ -459,10 +440,9 @@ significantly higher than for non-smokers, consistent with previous
 studies indicating that smoking is a significant factor affecting
 insurance costs.
 
-Interactions of Region and Gender: Region Coefficients: Some regional
-categories, such as southeast and southwest, are significant, suggesting
-that insurance costs in these regions are higher compared to the
-baseline region.
+Interactions of Region and Gender: Some regional categories, such as
+southeast and southwest, are significant, suggesting that insurance
+costs in these regions are higher compared to the baseline region.
 
 Interaction of Smoking Status and Gender: This interaction term is
 significant, indicating that the combination of smoking status and
@@ -479,21 +459,29 @@ predictive accuracy across different datasets.
 \subsubsection{Section 3.2: Predictions from Simple
 Model}\label{section-3.2-predictions-from-simple-model}
 
-Model Implementation The linear regression model was implemented using
-the lm() function in R, focusing on charges as the dependent variable.
-This model incorporates several predictors, including age, BMI, number
-of children, smoker status, and the interaction between smoker status
-and region, which were identified as significant in influencing
-insurance costs during the exploratory analysis.
+Model Implementation:\\
+The linear regression model was implemented using the lm() function in
+R, focusing on charges as the dependent variable. This model
+incorporates several predictors, including age, BMI, number of children,
+smoker status, and the interaction between smoker status and region,
+which were identified as significant in influencing insurance costs
+during the exploratory analysis.
 
-Testing and Predictions: To validate the effectiveness of the linear
-regression model, the dataset was split into training and testing
-subsets. Specifically, 80\% of the data was used for training the model,
-and the remaining 20\% served as the testing set. This division ensures
-that the model is tested on unseen data, providing a fair assessment of
-its predictive accuracy.
+Testing and Predictions:\\
+To validate the effectiveness of the linear regression model, the
+dataset was split into training and testing subsets. Specifically, 80\%
+of the data was used for training the model, and the remaining 20\%
+served as the testing set. This division ensures that the model is
+tested on unseen data, providing a fair assessment of its predictive
+accuracy.
 
 \begin{longtable}[]{@{}lrr@{}}
+\caption{Linear Model Predictions Compared to Actual
+Data}\tabularnewline
+\toprule\noalign{}
+& Actual & Predicted \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 & Actual & Predicted \\
 \midrule\noalign{}
@@ -508,9 +496,10 @@ its predictive accuracy.
 28 & 12268.632 & 14258.066 \\
 \end{longtable}
 
-Predictive Performance Evaluation: The model was fitted on the training
-data and then used to make predictions on the testing set. Here are the
-results of the predictions for the first few observations:
+Predictive Performance Evaluation:\\
+The model was fitted on the training data and then used to make
+predictions on the testing set. Here are the results of the predictions
+for the first few observations:
 
 As observed, the model provides reasonable estimates for the charges,
 although there are noticeable differences between the actual and
@@ -529,22 +518,25 @@ charges.
 \subsubsection{Section 3.3: Advanced
 Models}\label{section-3.3-advanced-models}
 
-Model Types: Regularized Regression To enhance the predictive accuracy
-and manage potential issues of multicollinearity and overfitting present
-in our linear regression model, we employed advanced modeling techniques
-such as Ridge and Lasso regression. These methods are forms of
-regularized regression that include a penalty term to the loss function:
+Model Types:\\
+Regularized Regression: To enhance the predictive accuracy and manage
+potential issues of multicollinearity and overfitting present in our
+linear regression model, we employed advanced modeling techniques such
+as Ridge and Lasso regression. These methods are forms of regularized
+regression that include a penalty term to the loss function:
 
 Ridge Regression (L2 regularization): Adds a penalty equal to the square
 of the magnitude of coefficients. This method is particularly effective
 in reducing the model complexity while still allowing the use of all
 variables. It helps in handling multicollinearity, preventing
-overfitting by shrinking the coefficients. Lasso Regression (L1
-regularization): Adds a penalty equivalent to the absolute value of the
-magnitude of coefficients. Unlike Ridge, Lasso can completely eliminate
-the weight of less important variables by setting their coefficients to
-zero. This results in feature selection within the model, which is
-beneficial when we need a sparse model with fewer variables.
+overfitting by shrinking the coefficients.
+
+Lasso Regression (L1 regularization): Adds a penalty equivalent to the
+absolute value of the magnitude of coefficients. Unlike Ridge, Lasso can
+completely eliminate the weight of less important variables by setting
+their coefficients to zero. This results in feature selection within the
+model, which is beneficial when we need a sparse model with fewer
+variables.
 
 Implementation and Predictions: Both models were implemented using the
 glmnet package in R, which efficiently handles large datasets and
@@ -561,23 +553,12 @@ Predictive Performance Evaluation: The predictions made by the Ridge and
 Lasso models on the testing set were compared with the actual charges
 and those predicted by the simple linear model.
 
-\begin{verbatim}
-## Warning: package 'glmnet' was built under R version 4.3.3
-\end{verbatim}
-
-\begin{verbatim}
-## Loading required package: Matrix
-\end{verbatim}
-
-\begin{verbatim}
-## Warning: package 'Matrix' was built under R version 4.3.2
-\end{verbatim}
-
-\begin{verbatim}
-## Loaded glmnet 4.1-8
-\end{verbatim}
-
 \begin{longtable}[]{@{}lrrrr@{}}
+\caption{Actual Data Compared to Predictive Models}\tabularnewline
+\toprule\noalign{}
+& Actual & Linear & Ridge & Lasso \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 & Actual & Linear & Ridge & Lasso \\
 \midrule\noalign{}
@@ -592,10 +573,11 @@ and those predicted by the simple linear model.
 28 & 12268.632 & 14258.066 & 14087.683 & 14248.724 \\
 \end{longtable}
 
-Comparison and Conclusions: The Ridge and Lasso models both adjusted the
-predictions closer to actual values in some cases, compared to the basic
-linear model. However, they also introduced some variability, likely due
-to the influence of the regularization term balancing bias and variance
+Comparison and Conclusions:\\
+The Ridge and Lasso models both adjusted the predictions closer to
+actual values in some cases, compared to the basic linear model.
+However, they also introduced some variability, likely due to the
+influence of the regularization term balancing bias and variance
 differently:
 
 Ridge Model: It generally increased the estimates, potentially due to
@@ -620,22 +602,24 @@ simple linear model.
 \subsection{Section 4: Discussion and
 Conclusions}\label{section-4-discussion-and-conclusions}
 
-Summary of Results In this analysis, we employed various statistical
-models to predict health insurance costs using a dataset that included
-variables such as age, BMI, number of children, smoker status, sex and
-regional interactions. The results can be summarized as follows:
+\textbf{Summary of Results}\\
+In this analysis, we employed various statistical models to predict
+health insurance costs using a dataset that included variables such as
+age, BMI, number of children, smoker status, sex and regional
+interactions. The results can be summarized as follows:
 
 Linear Regression Model: Provided a solid baseline for understanding how
 different variables impact insurance costs. Significant predictors
 included age, BMI, and especially smoker status, which greatly increased
 predicted charges. However, the model sometimes overestimated or
-underestimated charges significantly. Ridge Regression Model: Adjusted
-predictions closer to actual values in some instances, suggesting its
-effectiveness in handling multicollinearity by shrinking coefficients
-but considering all variables. Lasso Regression Model: Offered
-predictions similar to the linear model but with adjustments likely due
-to its feature selection capability, which dropped less influential
-predictors.
+underestimated charges significantly.\\
+Ridge Regression Model: Adjusted predictions closer to actual values in
+some instances, suggesting its effectiveness in handling
+multicollinearity by shrinking coefficients but considering all
+variables.\\
+Lasso Regression Model: Offered predictions similar to the linear model
+but with adjustments likely due to its feature selection capability,
+which dropped less influential predictors.
 
 For the predictions, we apply to the test data set all the
 transformations made to the train data set. For each model, the
@@ -643,6 +627,11 @@ predictions are obtained using the same command predict, and we evaluate
 the residual sum of squares, RSS.
 
 \begin{longtable}[]{@{}lr@{}}
+\caption{RSS Comparison of Models}\tabularnewline
+\toprule\noalign{}
+Model & RSS \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 Model & RSS \\
 \midrule\noalign{}
@@ -662,8 +651,9 @@ performs the best on the testing dataset.However, specific model
 selection should also consider other factors such as model
 interpretability, computational complexity, and so on.
 
-Impact of Analysis This analysis significantly enhances our
-understanding of factors influencing health insurance costs:
+\textbf{Impact of Analysis}\\
+This analysis significantly enhances our understanding of factors
+influencing health insurance costs:
 
 Smoker Status: Emerged as a critical determinant of insurance costs,
 with smokers incurring significantly higher charges. This highlights the
@@ -677,12 +667,13 @@ Regional Differences: The interaction terms suggested that regional
 factors might also play a role in insurance costs, potentially due to
 environmental, policy, or lifestyle differences.
 
-Conclusions Smoking status is the most potent predictor of health
-insurance charges, suggesting targeted health initiatives could be
-beneficial. Age and BMI are important factors in predicting insurance
-costs, indicating that personalized insurance plans could be more
-effective. Regularized regression models (Ridge and Lasso) are valuable
-for refining predictions and identifying key predictors, particularly in
-datasets prone to multicollinearity.
+\textbf{Conclusions}\\
+Smoking status is the most potent predictor of health insurance charges,
+suggesting targeted health initiatives could be beneficial. Age and BMI
+are important factors in predicting insurance costs, indicating that
+personalized insurance plans could be more effective. Regularized
+regression models (Ridge and Lasso) are valuable for refining
+predictions and identifying key predictors, particularly in datasets
+prone to multicollinearity.
 
 \end{document}

@@ -91,7 +91,7 @@ The Bonferroni critical value we calculated is -4.137174. Any observation with s
 Next, here are the five largest studentized residuals, which we will be comparing to the Bonferroni critical value:
 
 ```{r echo=FALSE}
-knitr::kable(sort(abs(stud), decreasing=TRUE)[1:5], col.names = c("Observation Number", "Studentized Residual")) # largest 5 studentized residuals
+knitr::kable(sort(abs(stud), decreasing=TRUE)[1:5], col.names = c("Observation Number", "Studentized Residual"), caption = "Largest 5 Studentized Residuals") # largest 5 studentized residuals
 # 1301 and 578 are unusual observations, we should remove them
 # leverage values for highly influential points (?)
 # Cook's distance
@@ -271,13 +271,13 @@ library(car)
 ```{r echo=FALSE}
 # Checking multicollinearity
 vif_data <- vif(lm(charges ~ age + bmi + children + smoker + sex + region, data = insurance2))
-knitr::kable(vif_data)
+knitr::kable(vif_data, caption = "Variance Inflation Factors of Linear Model")
 ```
 
 ```{r include=FALSE}
 # Building the linear model
 model_lm <- lm(charges ~ age + bmi + children + smoker + sex + region +  sex:smoker + smoker:region  , data = insurance2)
-knitr::kable(broom::tidy((model_lm)))
+knitr::kable(broom::tidy((model_lm)), caption = "Linear Model and Variables Used to Define")
 
 # Diagnostics - Check for normality and homoscedasticity
 par(mfrow=c(2,2))
@@ -331,7 +331,7 @@ model_lm <- lm(charges ~ age + bmi + children + smoker + sex + region +  sex:smo
 predictions <- predict(model_lm, newdata = testing_data)
 results <- data.frame(Actual = testing_data$charges, Predicted = predictions)
 
-knitr::kable(head(results))
+knitr::kable(head(results), caption = 'Linear Model Predictions Compared to Actual Data')
 
 ```
 
@@ -385,7 +385,7 @@ compare_results <- data.frame(
   Ridge = as.vector(ridge_predictions),
   Lasso = as.vector(lasso_predictions)
 )
-knitr::kable(head(compare_results))
+knitr::kable(head(compare_results), caption = 'Actual Data Compared to Predictive Models')
 ```
 Comparison and Conclusions:  
 The Ridge and Lasso models both adjusted the predictions closer to actual values in some cases, compared to the basic linear model. However, they also introduced some variability, likely due to the influence of the regularization term balancing bias and variance differently:
@@ -422,7 +422,7 @@ rss_summary <- data.frame(
   RSS = c(rss_linear, rss_ridge, rss_lasso)
   
 )
-knitr::kable(rss_summary)
+knitr::kable(rss_summary, caption = 'RSS Comparison of Models')
 ```
 
 Comparative analysis showed that while the linear model was useful for understanding direct relationships and setting a baseline, both Ridge and Lasso provided nuanced insights by addressing overfitting and highlighting essential predictors, but the Lasso regression model performs the best on the testing dataset.However, specific model selection should also consider other factors such as model interpretability, computational complexity, and so on.
