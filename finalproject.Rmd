@@ -273,7 +273,7 @@ knitr::kable(vif_data)
 
 # Building the linear model
 model_lm <- lm(charges ~ age + bmi + children + smoker + sex + region +  sex:smoker + smoker:region  , data = insurance2)
-summary(model_lm)
+knitr::kable(broom::tidy((model_lm)))
 
 # Diagnostics - Check for normality and homoscedasticity
 par(mfrow=c(2,2))

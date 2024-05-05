@@ -379,38 +379,45 @@ sex & 1.009150 & 1 & 1.004565 \\
 region & 1.099632 & 3 & 1.015955 \\
 \end{longtable}
 
-\begin{verbatim}
-## 
-## Call:
-## lm(formula = charges ~ age + bmi + children + smoker + sex + 
-##     region + sex:smoker + smoker:region, data = insurance2)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -13669  -2817  -1035   1269  25874 
-## 
-## Coefficients:
-##                            Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)               -10872.78     980.81 -11.085  < 2e-16 ***
-## age                          256.73      11.57  22.197  < 2e-16 ***
-## bmi                          329.46      27.84  11.836  < 2e-16 ***
-## children                     493.41     133.85   3.686 0.000237 ***
-## smokeryes                  19484.22     931.12  20.926  < 2e-16 ***
-## sexmale                     -600.93     360.92  -1.665 0.096153 .  
-## regionnorthwest             -506.43     514.05  -0.985 0.324713    
-## regionsoutheast            -2272.77     524.14  -4.336 1.56e-05 ***
-## regionsouthwest            -1748.10     515.09  -3.394 0.000710 ***
-## smokeryes:sexmale           2163.42     812.25   2.663 0.007827 ** 
-## smokeryes:regionnorthwest    978.98    1178.49   0.831 0.406291    
-## smokeryes:regionsoutheast   5661.02    1082.02   5.232 1.95e-07 ***
-## smokeryes:regionsouthwest   4329.60    1178.69   3.673 0.000249 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 5881 on 1323 degrees of freedom
-## Multiple R-squared:  0.7612, Adjusted R-squared:  0.759 
-## F-statistic: 351.4 on 12 and 1323 DF,  p-value: < 2.2e-16
-\end{verbatim}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.3662}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1690}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1549}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1690}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1408}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+term
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+std.error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+statistic
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p.value
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+(Intercept) & -10872.7813 & 980.81424 & -11.0854644 & 0.0000000 \\
+age & 256.7318 & 11.56610 & 22.1969119 & 0.0000000 \\
+bmi & 329.4601 & 27.83512 & 11.8361296 & 0.0000000 \\
+children & 493.4100 & 133.84574 & 3.6864081 & 0.0002366 \\
+smokeryes & 19484.2187 & 931.12076 & 20.9255550 & 0.0000000 \\
+sexmale & -600.9312 & 360.92352 & -1.6649820 & 0.0961531 \\
+regionnorthwest & -506.4314 & 514.04704 & -0.9851849 & 0.3247134 \\
+regionsoutheast & -2272.7675 & 524.13906 & -4.3361918 & 0.0000156 \\
+regionsouthwest & -1748.1011 & 515.08692 & -3.3937983 & 0.0007097 \\
+smokeryes:sexmale & 2163.4193 & 812.24909 & 2.6634924 & 0.0078273 \\
+smokeryes:regionnorthwest & 978.9794 & 1178.49340 & 0.8307041 &
+0.4062907 \\
+smokeryes:regionsoutheast & 5661.0242 & 1082.01632 & 5.2319212 &
+0.0000002 \\
+smokeryes:regionsouthwest & 4329.6030 & 1178.68617 & 3.6732449 &
+0.0002490 \\
+\end{longtable}
 
 \includegraphics{finalproject_files/figure-latex/unnamed-chunk-19-1.pdf}
 Model Diagnostics: The diagnostics conducted include: Multicollinearity
