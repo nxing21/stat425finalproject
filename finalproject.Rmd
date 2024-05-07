@@ -267,8 +267,9 @@ vif_data <- vif(lm(charges ~ age + bmi + children + smoker + sex + region, data 
 # Display Table 2
 knitr::kable(vif_data, caption = "Variance Inflation Factors of Linear Model")
 ```
+\newpage
 
-```{r include=FALSE}
+```{r echo=FALSE}
 # Building the linear model
 model_lm <- lm(charges ~ age + bmi + children + smoker + sex + region +  sex:smoker + smoker:region  , data = insurance2)
 knitr::kable(broom::tidy((model_lm)), caption = "Linear Model and Variables Used to Define")
